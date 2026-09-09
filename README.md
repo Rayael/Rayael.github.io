@@ -1,6 +1,6 @@
 # Rayael.github.io
 A website only for someone.
-<!DOCTYPE html>
+
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
