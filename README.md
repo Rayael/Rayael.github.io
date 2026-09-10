@@ -5,253 +5,297 @@ A website only for someone.
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-<title>Cahier de conjugaison — 3e groupe</title>
+<title>Cahier de conjugaison — 3e groupe (Retro Edition)</title>
 <meta name="apple-mobile-web-app-capable" content="yes" />
-<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <meta name="apple-mobile-web-app-title" content="Conjugaison" />
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
+
   :root {
-    --bg-color: #EDEAE2;
-    --sheet-bg: #FAF9F4;
-    --sheet-stripe: #C9DCEC;
-    --margin-line: #D98D86;
-    --text-main: #1E2A3A;
-    --text-muted: #5A6B7A;
-    --chip-border: #B9CFE4;
-    --chip-text: #4B5A6B;
-    --chip-active-bg: #1E2A3A;
-    --chip-active-text: #FAF9F4;
-    --input-border: #B9CFE4;
-    --input-focus: #1E2A3A;
-    --correct-color: #2F6B3A;
-    --incorrect-color: #C1443D;
+    /* Theme Arcade Light (Style Gameboy / PC 90s) */
+    --bg-color: #9fb8ad;
+    --sheet-bg: #e0e6ed;
+    --border-main: #1a1a1a;
+    --text-main: #1a1a1a;
+    --text-muted: #525252;
+    --chip-bg: #c5d1db;
+    --chip-active-bg: #1a1a1a;
+    --chip-active-text: #e0e6ed;
+    --input-focus: #f72585;
+    --correct-color: #008a00;
+    --incorrect-color: #d90429;
+    --ru-bg: rgba(0, 0, 0, 0.08);
     
-    --font-sans: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-    --font-serif: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
-    --font-ru: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-retro: 'VT323', 'Courier New', Courier, monospace;
+    --font-ru: 'Courier New', Courier, monospace; /* Meilleure lisibilité pour le Cyrillique */
   }
 
-  /* Variables Dark Mode (Appliquées via une classe JS) */
+  /* Theme Arcade Dark (Style Cyberpunk / Borne d'arcade) */
   body.dark-mode {
     --bg-color: #121212;
-    --sheet-bg: #1E1E1E;
-    --sheet-stripe: #2A3644;
-    --margin-line: #A65D56;
-    --text-main: #EAECEF;
-    --text-muted: #9AA7B5;
-    --chip-border: #3A4B5C;
-    --chip-text: #B9CFE4;
-    --chip-active-bg: #EAECEF;
-    --chip-active-text: #1E1E1E;
-    --input-border: #5A6B7A;
-    --input-focus: #EAECEF;
-    --correct-color: #66BB6A;
-    --incorrect-color: #EF5350;
+    --sheet-bg: #1a1a1a;
+    --border-main: #00ffcc; /* Néon Cyan */
+    --text-main: #f0f0f0;
+    --text-muted: #8c8c8c;
+    --chip-bg: #2a2a2a;
+    --chip-active-bg: #00ffcc;
+    --chip-active-text: #121212;
+    --input-focus: #ff0055; /* Néon Rose */
+    --correct-color: #39ff14; /* Néon Vert */
+    --incorrect-color: #ff0055;
+    --ru-bg: rgba(0, 255, 204, 0.1);
   }
 
-  * { box-sizing: border-box; }
+  * { 
+    box-sizing: border-box; 
+    border-radius: 0 !important; /* Rendu blocky pixel */
+  }
+  
   html, body {
     margin: 0;
     padding: 0;
     min-height: 100%;
     background: var(--bg-color);
-    font-family: var(--font-serif);
+    font-family: var(--font-retro);
     transition: background-color 0.3s ease;
+    color: var(--text-main);
   }
+  
   body {
     display: flex;
     justify-content: center;
     padding: 16px 8px;
   }
+  
   #theme-toggle {
     position: absolute;
     top: 16px;
     right: 16px;
-    background: none;
-    border: none;
-    font-size: 24px;
+    background: var(--sheet-bg);
+    border: 3px solid var(--border-main);
+    color: var(--text-main);
+    font-size: 20px;
     cursor: pointer;
     z-index: 10;
-    padding: 4px;
-    opacity: 0.8;
+    padding: 6px 10px;
+    font-family: var(--font-retro);
+    box-shadow: 4px 4px 0px var(--border-main);
+    transition: transform 0.1s, box-shadow 0.1s;
   }
+  
+  #theme-toggle:active {
+    transform: translate(4px, 4px);
+    box-shadow: 0px 0px 0px var(--border-main);
+  }
+  
   #sheet {
     position: relative;
     width: 100%;
-    max-width: 460px;
+    max-width: 480px;
     background-color: var(--sheet-bg);
-    background-image: repeating-linear-gradient(
-      to bottom,
-      transparent 0px,
-      transparent 33px,
-      var(--sheet-stripe) 34px
-    );
-    border-radius: 6px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    border: 4px solid var(--border-main);
+    box-shadow: 8px 8px 0px var(--border-main);
     overflow: hidden;
-    margin-top: 10px; /* Espace pour le bouton thème */
+    margin-top: 40px; 
   }
-  #margin-line {
-    position: absolute;
-    top: 0; bottom: 0; left: 40px;
-    width: 1.5px;
-    background: var(--margin-line);
-  }
+  
   #content {
-    padding: 28px 22px 26px 56px;
+    padding: 24px;
   }
+  
   h1 {
-    font-family: var(--font-serif);
-    font-weight: 600;
-    font-size: 26px;
+    font-weight: normal;
+    font-size: 36px;
     color: var(--text-main);
-    margin: 0;
-    letter-spacing: -0.01em;
-  }
-  .subtitle {
-    font-family: var(--font-sans);
-    font-size: 13.5px;
-    color: var(--text-muted);
-    margin: 8px 0 0;
-    line-height: 1.5;
-  }
-  .section-label {
-    font-family: var(--font-sans);
-    font-size: 12px;
-    color: var(--text-muted);
+    margin: 0 0 10px 0;
     text-transform: uppercase;
-    letter-spacing: .05em;
-    margin: 24px 0 10px;
-    font-weight: 600;
+    text-shadow: 2px 2px 0px var(--text-muted);
   }
-  .chip-row { display: flex; flex-wrap: wrap; gap: 8px; }
+  
+  .subtitle {
+    font-size: 18px;
+    color: var(--text-muted);
+    margin: 0 0 20px;
+    line-height: 1.2;
+  }
+  
+  .section-label {
+    font-size: 20px;
+    color: var(--text-main);
+    text-transform: uppercase;
+    margin: 24px 0 12px;
+    border-bottom: 2px dashed var(--text-muted);
+    display: inline-block;
+  }
+  
+  .chip-row { display: flex; flex-wrap: wrap; gap: 12px; }
+  
   .chip {
-    font-family: var(--font-sans);
-    font-size: 13px;
+    font-size: 18px;
     padding: 6px 12px;
-    border-radius: 16px;
-    border: 1px solid var(--chip-border);
-    background: transparent;
-    color: var(--chip-text);
+    border: 2px solid var(--border-main);
+    background: var(--chip-bg);
+    color: var(--text-main);
     cursor: pointer;
-    transition: all 0.2s ease;
+    box-shadow: 3px 3px 0px var(--border-main);
+    transition: transform 0.1s, box-shadow 0.1s;
+    text-transform: uppercase;
   }
+  
+  .chip:active {
+    transform: translate(3px, 3px);
+    box-shadow: 0px 0px 0px var(--border-main);
+  }
+  
   .chip.active { 
     background: var(--chip-active-bg); 
     border-color: var(--chip-active-bg); 
     color: var(--chip-active-text); 
   }
+  
   .accent-toggle {
     display: flex;
     align-items: center;
-    font-family: var(--font-sans);
-    font-size: 13.5px;
+    font-size: 18px;
     color: var(--text-muted);
     cursor: pointer;
-    margin-top: 20px;
+    margin-top: 24px;
   }
-  .accent-toggle input { margin-right: 8px; width: 16px; height: 16px; }
+  
+  .accent-toggle input { 
+    margin-right: 12px; 
+    width: 20px; 
+    height: 20px; 
+    accent-color: var(--input-focus);
+    border: 2px solid var(--border-main);
+  }
+  
   .btn {
-    font-family: var(--font-sans);
-    font-size: 15px;
-    font-weight: 500;
-    padding: 10px 20px;
-    background: var(--chip-active-bg);
-    color: var(--chip-active-text);
-    border: none;
-    border-radius: 4px;
+    font-size: 22px;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    background: var(--sheet-bg);
+    color: var(--text-main);
+    border: 4px solid var(--border-main);
     cursor: pointer;
     width: 100%;
-    margin-top: 12px;
-    transition: opacity 0.15s ease;
+    margin-top: 20px;
+    box-shadow: 6px 6px 0px var(--border-main);
+    transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s;
   }
-  .btn:active { opacity: 0.8; }
+  
+  .btn:active { 
+    transform: translate(6px, 6px);
+    box-shadow: 0px 0px 0px var(--border-main);
+  }
+
+  .btn:hover {
+    background: var(--chip-bg);
+  }
   
   .score-row {
-    font-family: var(--font-sans);
-    font-size: 13.5px;
-    color: var(--text-muted);
+    font-size: 20px;
+    color: var(--text-main);
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
+  
   .menu-link {
-    background: none;
+    background: var(--border-main);
     border: none;
-    color: var(--text-muted);
-    text-decoration: underline;
-    font-size: 13.5px;
+    color: var(--sheet-bg);
+    font-size: 18px;
     cursor: pointer;
-    padding: 0;
-  }
-  .hr {
-    border: none;
-    border-top: 1px solid var(--sheet-stripe);
-    margin: 14px 0 20px;
+    padding: 4px 8px;
+    text-transform: uppercase;
   }
   
-  .prompt-header { margin-bottom: 12px; }
-  .infinitive { font-size: 22px; font-weight: 600; color: var(--text-main); }
-  .tense-tag { font-size: 16px; color: var(--text-muted); font-style: italic; }
+  .hr {
+    border: none;
+    border-top: 4px dotted var(--border-main);
+    margin: 20px 0;
+  }
+  
+  .prompt-header { margin-bottom: 16px; }
+  .infinitive { font-size: 32px; color: var(--text-main); text-transform: uppercase; }
+  .tense-tag { font-size: 20px; color: var(--text-muted); }
   
   .sentence-row {
     display: flex;
     align-items: baseline;
     flex-wrap: wrap;
-    gap: 6px;
-    font-size: 20px;
+    gap: 10px;
+    font-size: 26px;
     color: var(--text-main);
     line-height: 1.6;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
   }
-  .pronoun-label { font-weight: 600; }
+  
+  .pronoun-label { color: var(--text-main); }
+  
   #answer-input {
-    font-family: var(--font-serif);
-    font-size: 20px;
-    color: var(--text-main);
+    font-family: var(--font-retro);
+    font-size: 26px;
+    color: var(--input-focus);
     background: transparent;
     border: none;
-    border-bottom: 2px solid var(--input-border);
-    padding: 2px 4px;
-    width: 130px;
-    border-radius: 0;
+    border-bottom: 4px solid var(--border-main);
+    padding: 4px 8px;
+    width: 140px;
     text-align: center;
+    transition: border-color 0.2s;
   }
-  #answer-input::placeholder { color: var(--text-muted); font-style: italic; font-size: 16px; }
-  #answer-input:focus { outline: none; border-bottom-color: var(--input-focus); }
+  
+  #answer-input::placeholder { color: var(--text-muted); font-size: 20px; }
+  #answer-input:focus { outline: none; border-bottom-color: var(--input-focus); background: var(--ru-bg); }
   
   .context-label { color: var(--text-main); }
 
-  .feedback-zone { min-height: 80px; margin: 16px 0; }
+  .feedback-zone { min-height: 90px; margin: 20px 0; }
+  
   .correct-mark {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 24px;
     color: var(--correct-color);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
+    animation: blink 0.5s ease-in-out;
   }
+  
   .incorrect-mark {
-    font-size: 18px;
-    font-weight: bold;
+    font-size: 24px;
     color: var(--incorrect-color);
-    margin-bottom: 4px;
+    margin-bottom: 8px;
   }
+  
   .ru-line {
     font-family: var(--font-ru);
-    font-size: 14.5px;
+    font-size: 16px;
     color: var(--text-muted);
-    margin-top: 8px;
-    padding: 10px;
-    background: rgba(128,128,128,0.1);
-    border-radius: 6px;
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--ru-bg);
+    border: 2px dashed var(--border-main);
     line-height: 1.45;
+  }
+  
+  .ru-line strong {
+    color: var(--text-main);
+    background: var(--sheet-bg);
+    padding: 0 4px;
+  }
+
+  @keyframes blink {
+    0% { opacity: 0; }
+    50% { opacity: 1; }
+    100% { opacity: 0; }
   }
 </style>
 </head>
 <body>
-<button id="theme-toggle" aria-label="Basculer le thème">🌙</button>
+<button id="theme-toggle" aria-label="Basculer le thème">PWR</button>
 
 <div id="sheet">
-  <div id="margin-line" aria-hidden="true"></div>
   <div id="content"></div>
 </div>
 
@@ -266,10 +310,12 @@ let isDark = localStorage.getItem("theme") === "dark" || (!localStorage.getItem(
 function updateTheme() {
   if (isDark) {
     document.body.classList.add("dark-mode");
-    themeToggleBtn.textContent = "☀️";
+    themeToggleBtn.textContent = "ON ";
+    themeToggleBtn.style.color = "var(--correct-color)";
   } else {
     document.body.classList.remove("dark-mode");
-    themeToggleBtn.textContent = "🌙";
+    themeToggleBtn.textContent = "OFF";
+    themeToggleBtn.style.color = "var(--text-main)";
   }
 }
 updateTheme();
@@ -302,16 +348,16 @@ function playSound(type) {
   gainNode.connect(audioCtx.destination);
   
   if (type === 'correct') {
-    // Son "coin" (aigu, positif)
+    // Son "coin" (aigu, positif) - Typique jeu rétro
     osc.type = 'square';
-    osc.frequency.setValueAtTime(440, audioCtx.currentTime); // La
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); // La aigu
-    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); // Volume doux
+    osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); 
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
     osc.start(audioCtx.currentTime);
     osc.stop(audioCtx.currentTime + 0.3);
   } else {
-    // Son "bzz" (grave, descendant, erreur)
+    // Son "bzz" (grave, descendant, erreur) - Typique game over
     osc.type = 'sawtooth';
     osc.frequency.setValueAtTime(300, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
@@ -555,21 +601,21 @@ function toggleTense(t) {
 function render() {
   if (!state.started) {
     content.innerHTML = `
-      <div style="padding-top:20px;padding-bottom:20px;">
-        <h1>Cahier de conjugaison</h1>
-        <p class="subtitle">${VERBS.length} verbes irréguliers (+ être, avoir) — Phrases en contexte, traduites.</p>
+      <div style="padding-top:10px;padding-bottom:10px;">
+        <h1>Conjugaison 3e gr.</h1>
+        <p class="subtitle">► ${VERBS.length} verbes + être/avoir</p>
 
-        <div class="section-label">Temps à travailler</div>
+        <div class="section-label">SELECT. TEMPS</div>
         <div class="chip-row" id="tense-chips">
           ${TENSE_ORDER.map(t => `<button class="chip ${state.activeTenses[t] ? "active" : ""}" data-tense="${t}">${TENSE_LABELS[t]}</button>`).join("")}
         </div>
 
         <label class="accent-toggle">
           <input type="checkbox" id="accent-checkbox" ${state.ignoreAccents ? "checked" : ""} />
-          Tolérer les fautes d'accents
+          TOLERANCE ACCENTS (ON/OFF)
         </label>
         <div style="margin-top:28px;">
-          <button class="btn" id="start-btn">Démarrer</button>
+          <button class="btn" id="start-btn">► START ◄</button>
         </div>
       </div>
     `;
@@ -580,7 +626,6 @@ function render() {
       state.ignoreAccents = e.target.checked;
     });
     document.getElementById("start-btn").addEventListener("click", () => {
-      // Initialise l'audio au premier clic (nécessaire pour les navigateurs modernes)
       initAudio(); 
       state.score = { correct: 0, total: 0 };
       state.question = pickQuestion(state.activeTenses);
@@ -600,12 +645,11 @@ function render() {
   let feedbackHtml = "";
   if (state.feedback !== null) {
     const isCorrect = state.feedback === "correct";
-    const userAns = document.getElementById("answer-input")?.value.trim() || "...";
     
     if (isCorrect) {
-      feedbackHtml += `<div class="correct-mark">✓ ${displayPronoun}${q.answers[0]} ${frenchContext}</div>`;
+      feedbackHtml += `<div class="correct-mark">SUCCESS! ${displayPronoun}${q.answers[0]} ${frenchContext}</div>`;
     } else {
-      feedbackHtml += `<div class="incorrect-mark">✗ ${displayPronoun}<u>${q.answers[0]}</u> ${frenchContext}</div>`;
+      feedbackHtml += `<div class="incorrect-mark">GAME OVER: ${displayPronoun}<u>${q.answers[0]}</u> ${frenchContext}</div>`;
     }
     
     // Rendu pédagogique avec infinitif russe entre crochets
@@ -618,14 +662,14 @@ function render() {
 
   content.innerHTML = `
     <div class="score-row">
-      <span>${state.score.correct} / ${state.score.total} corrects</span>
-      <button class="menu-link" id="menu-btn">Menu</button>
+      <span>SCORE: ${state.score.correct}/${state.score.total}</span>
+      <button class="menu-link" id="menu-btn">QUIT</button>
     </div>
     <div class="hr"></div>
     
     <div class="prompt-header">
       <span class="infinitive">${q.verb.inf}</span>
-      <span class="tense-tag"> — ${TENSE_LABELS[q.tense]}</span>
+      <span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span>
     </div>
     
     <div class="sentence-row">
@@ -633,7 +677,7 @@ function render() {
       <input
         type="text"
         id="answer-input"
-        placeholder="verbe..."
+        placeholder="___"
         autocapitalize="none"
         autocorrect="off"
         spellcheck="false"
@@ -643,7 +687,7 @@ function render() {
     </div>
     
     <div class="feedback-zone">${feedbackHtml}</div>
-    <button class="btn" id="action-btn">${state.feedback === null ? "Valider" : "Suivant →"}</button>
+    <button class="btn" id="action-btn">${state.feedback === null ? "VALIDATE" : "NEXT LEVEL >"}</button>
   `;
 
   const input = document.getElementById("answer-input");
@@ -665,7 +709,6 @@ function render() {
     state.score = { correct: state.score.correct + (ok ? 1 : 0), total: state.score.total + 1 };
     state.feedback = ok ? "correct" : "incorrect";
     
-    // Déclenchement du son approprié
     playSound(state.feedback);
     
     render();
