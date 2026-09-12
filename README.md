@@ -27,20 +27,20 @@
     --ru-bg: rgba(0, 255, 204, 0.1);
   }
 
-  /* --- THEME SAKURA (Écrase les autres thèmes si actif) --- */
+  /* --- THEME SAKURA --- */
   body.sakura-mode {
     --bg-color: #ffd1dc !important; 
     --sheet-bg: #fff0f5 !important; 
     --border-main: #b03060 !important;
     --text-main: #4a3636 !important; 
-    --text-muted: #d4a3ab !important; 
+    --text-muted: #8b4c5e !important; /* Bordeaux foncé pour une excellente lisibilité */
     --chip-bg: #ffb7c5 !important;
     --chip-active-bg: #b03060 !important; 
     --chip-active-text: #fff !important;
     --input-focus: #ff1493 !important; 
     --correct-color: #2e8b57 !important; 
     --incorrect-color: #dc143c !important;
-    --ru-bg: rgba(255, 183, 197, 0.4) !important;
+    --ru-bg: rgba(255, 183, 197, 0.5) !important;
   }
 
   * { box-sizing: border-box; border-radius: 0 !important; }
@@ -51,7 +51,7 @@
   .nav-btn { background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); font-size: 18px; cursor: pointer; padding: 6px 10px; font-family: var(--font-retro); box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; }
   .nav-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-main); }
   
-  #sheet { position: relative; width: 100%; max-width: 480px; background: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; }
+  #sheet { position: relative; width: 100%; max-width: 480px; background: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; z-index: 2;}
   #content { padding: 24px; }
   h1 { font-weight: normal; font-size: 36px; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 2px 2px 0px var(--text-muted); }
   .subtitle { font-size: 18px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.2; }
@@ -93,12 +93,14 @@
 
   /* --- STYLES ECRAN DE FIN --- */
   .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
-  .result-score { font-size: 80px; margin-bottom: 10px; font-weight: bold; }
-  
-  .result-rgb { 
-    animation: rainbow 2s linear infinite, pulse 0.5s infinite alternate; 
-    text-shadow: 0 0 15px currentColor;
+  .result-score { 
+    font-size: 80px; 
+    margin-bottom: 10px; 
+    font-weight: bold;
+    -webkit-text-stroke: 3px var(--border-main); /* Effet pixel contour noir hyper lisible */
   }
+  
+  .result-rgb { animation: rainbow 2s linear infinite, pulse 0.5s infinite alternate; text-shadow: 0 0 15px currentColor; }
   .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
   .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
   .result-orange { color: #ff8c00; }
@@ -117,6 +119,45 @@
   /* Confettis */
   .confetti { position: absolute; width: 12px; height: 12px; opacity: 0.9; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+  /* --- EASTER EGG (Coeur et Pop-up) --- */
+  #secret-heart {
+    position: fixed;
+    bottom: 30px;
+    left: 20px;
+    font-size: 32px;
+    color: #ff1493;
+    opacity: 0.4;
+    cursor: pointer;
+    user-select: none;
+    z-index: 100;
+    font-family: var(--font-retro);
+    text-shadow: 2px 2px 0px var(--border-main);
+    transition: transform 0.1s;
+  }
+  #secret-heart:active { transform: scale(0.8) translate(2px, 2px); }
+
+  #love-popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    background: var(--sheet-bg);
+    color: #ff1493;
+    border: 6px solid #ff1493;
+    box-shadow: 8px 8px 0px var(--border-main);
+    padding: 20px 30px;
+    font-size: 36px;
+    text-align: center;
+    z-index: 9999;
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  }
+  #love-popup.show {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 </style>
 </head>
 <body>
@@ -127,6 +168,10 @@
   <button id="bgm-toggle" class="nav-btn" aria-label="Musique">🎵 OFF</button>
 </div>
 
+<!-- L'Easter Egg Cliquable -->
+<div id="secret-heart" aria-hidden="true">&hearts;</div>
+<div id="love-popup">MOI AUSSI JE T'AIME ! &hearts;</div>
+
 <div id="sheet"><div id="content"></div></div>
 
 <script>
@@ -135,7 +180,6 @@ const themeToggleBtn = document.getElementById("theme-toggle");
 const sakuraToggleBtn = document.getElementById("theme-sakura");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
 
-// Initialise le thème (light, dark, sakura)
 let currentTheme = localStorage.getItem("theme") || (prefersDark ? "dark" : "light");
 
 function applyTheme() {
@@ -170,7 +214,7 @@ sakuraToggleBtn.addEventListener("click", () => {
 /* --- MUSIC --- */
 const bgmToggleBtn = document.getElementById("bgm-toggle");
 const bgMusic = new Audio('music.mp3'); 
-bgMusic.loop = true; bgMusic.volume = 0.3;
+bgMusic.loop = true; bgMusic.volume = 0.2;
 let isMusicPlaying = false;
 bgmToggleBtn.addEventListener("click", () => {
   if (isMusicPlaying) { bgMusic.pause(); bgmToggleBtn.textContent = "🎵 OFF"; } 
@@ -181,61 +225,130 @@ bgmToggleBtn.addEventListener("click", () => {
 /* --- AUDIO SFX --- */
 let audioCtx;
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+
 function playSound(type) {
-  initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-  osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+  initAudio(); 
+  const osc = audioCtx.createOscillator(); 
+  const gainNode = audioCtx.createGain();
+  osc.connect(gainNode); 
+  gainNode.connect(audioCtx.destination);
+  
+  // --- VOLUME DES EFFETS SONORES (SFX) ---
+  // Modifie cette valeur pour baisser ou augmenter tous les bruitages (ex: 0.01 pour très bas, 0.05 pour normal)
+  const sfxVolume = 0.1; 
   
   if (type === 'correct') {
-    osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
-    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+    osc.type = 'square'; 
+    osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
+    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); 
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'incorrect') {
-    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
-    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+    osc.type = 'sawtooth'; 
+    osc.frequency.setValueAtTime(300, audioCtx.currentTime); 
+    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); 
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'victory') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    osc.type = 'square'; 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); 
+    });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 0.8);
   } else if (type === 'small_victory') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    osc.type = 'square'; 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [440, 554.37, 659.25].forEach((freq, i) => { 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); 
+    });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 0.6);
   } else if (type === 'defeat') {
-    osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
-    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
+    osc.type = 'sawtooth'; 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); 
+    });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 1.0);
   } else if (type === 'very_sad') {
     osc.type = 'triangle'; 
     osc.frequency.setValueAtTime(200, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
-    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 1.5);
   } else if (type === 'perfect') {
-    // Fanfare épique
-    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    osc.type = 'square'; 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
     const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51, 1567.98];
-    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); });
+    notes.forEach((freq, i) => { 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); 
+    });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 1.5);
     
-    // Bruit blanc pour simuler des applaudissements "8-bit"
+    // 8-bit applaudissements proportionnels au sfxVolume
     const bufferSize = audioCtx.sampleRate * 2;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-    const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 800;
-    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+    const noise = audioCtx.createBufferSource(); 
+    noise.buffer = buffer;
+    const noiseFilter = audioCtx.createBiquadFilter(); 
+    noiseFilter.type = 'lowpass'; 
+    noiseFilter.frequency.value = 800;
+    const noiseGain = audioCtx.createGain(); 
+    noiseGain.gain.setValueAtTime(sfxVolume * 0.6, audioCtx.currentTime);
     noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
-    noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+    noise.connect(noiseFilter); 
+    noiseFilter.connect(noiseGain); 
+    noiseGain.connect(audioCtx.destination);
     noise.start(audioCtx.currentTime);
+  } else if (type === 'love') {
+    osc.type = 'square'; 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; 
+    notes.forEach((freq, i) => { 
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); 
+    });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
+    osc.start(audioCtx.currentTime); 
+    osc.stop(audioCtx.currentTime + 0.7);
   }
 }
+
+/* --- LOGIQUE DE L'EASTER EGG --- */
+const secretHeart = document.getElementById("secret-heart");
+const lovePopup = document.getElementById("love-popup");
+let heartCount = 0;
+let popupTimeout;
+
+secretHeart.addEventListener("click", () => {
+  heartCount++;
+  if (heartCount >= 10) {
+    playSound('love');
+    clearTimeout(popupTimeout);
+    lovePopup.classList.add("show");
+    
+    popupTimeout = setTimeout(() => {
+      lovePopup.classList.remove("show");
+      heartCount = 0;
+    }, 3000);
+  }
+});
+
 
 
 /* DATA - MEGA BASE DE DONNEES (Sélection des verbes principaux° */
@@ -508,7 +621,7 @@ function render() {
     // Logique des paliers
     if (state.sessionScore === 20) { 
       resultClass = 'result-rgb'; message = "PARFAIT ! SCORE MAXIMAL ! INCROYABLE !"; sound = 'perfect'; 
-    } else if (state.sessionScore >= 16) { 
+    } else if (state.sessionScore > 17) { 
       resultClass = 'result-golden'; message = "EXCELLENT ! T'ES UN BOSS !"; sound = 'victory'; 
     } else if (state.sessionScore >= 10) { 
       resultClass = 'result-green'; message = "BIEN JOUÉ ! ENCORE UN EFFORT !"; sound = 'small_victory'; 
@@ -518,9 +631,9 @@ function render() {
       resultClass = 'result-red'; message = "RÉVISE, PUIS RETENTE TA CHANCE !"; sound = 'very_sad'; 
     }
     
-    // Génération des confettis si score >= 16
+    // Génération des confettis si score > 17
     let confettiHTML = '';
-    if (state.sessionScore >= 16) {
+    if (state.sessionScore > 17) {
         for(let i=0; i<30; i++) {
             confettiHTML += `<div class="confetti" style="left:${Math.random()*100}%; top:-20px; animation-delay:${Math.random()*2}s; background:hsl(${Math.random()*360},100%,50%)"></div>`;
         }
