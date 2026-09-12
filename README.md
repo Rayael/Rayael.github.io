@@ -1,6 +1,3 @@
-# Rayael.github.io
-A website only for someone.
-
 <html lang="fr">
 <head>
 <meta charset="UTF-8" />
@@ -21,6 +18,7 @@ A website only for someone.
     --font-retro: 'VT323', 'Courier New', Courier, monospace;
     --font-ru: 'Courier New', Courier, monospace;
   }
+  
   body.dark-mode {
     --bg-color: #121212; --sheet-bg: #1a1a1a; --border-main: #00ffcc;
     --text-main: #f0f0f0; --text-muted: #8c8c8c; --chip-bg: #2a2a2a;
@@ -28,33 +26,32 @@ A website only for someone.
     --input-focus: #ff0055; --correct-color: #39ff14; --incorrect-color: #ff0055;
     --ru-bg: rgba(0, 255, 204, 0.1);
   }
-  /* --- STYLES ECRAN DE FIN --- */
-  .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
-  .result-score { font-size: 80px; margin-bottom: 10px; font-weight: bold; }
-  
-  .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
-  .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
-  .result-orange { color: #ff8c00; }
-  
-  .error-list { margin-top: 20px; font-size: 22px; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
-  .error-list ul { margin: 10px 0 0 0; padding-left: 20px; }
-  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; }
-  
-  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
-  
-  /* Confettis */
-  .confetti { position: absolute; width: 12px; height: 12px; opacity: 0.9; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }
-  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
+
+  /* --- THEME SAKURA (Écrase les autres thèmes si actif) --- */
+  body.sakura-mode {
+    --bg-color: #ffd1dc !important; 
+    --sheet-bg: #fff0f5 !important; 
+    --border-main: #b03060 !important;
+    --text-main: #4a3636 !important; 
+    --text-muted: #d4a3ab !important; 
+    --chip-bg: #ffb7c5 !important;
+    --chip-active-bg: #b03060 !important; 
+    --chip-active-text: #fff !important;
+    --input-focus: #ff1493 !important; 
+    --correct-color: #2e8b57 !important; 
+    --incorrect-color: #dc143c !important;
+    --ru-bg: rgba(255, 183, 197, 0.4) !important;
+  }
 
   * { box-sizing: border-box; border-radius: 0 !important; }
   html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-color); font-family: var(--font-retro); transition: background-color 0.3s ease; color: var(--text-main); }
   body { display: flex; justify-content: center; padding: 16px 8px; }
   
-  .top-buttons { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; }
+  .top-buttons { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; flex-wrap: wrap; justify-content: flex-end; }
   .nav-btn { background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); font-size: 18px; cursor: pointer; padding: 6px 10px; font-family: var(--font-retro); box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; }
   .nav-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-main); }
   
-  #sheet { position: relative; width: 100%; max-width: 480px; background-color: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; }
+  #sheet { position: relative; width: 100%; max-width: 480px; background: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; }
   #content { padding: 24px; }
   h1 { font-weight: normal; font-size: 36px; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 2px 2px 0px var(--text-muted); }
   .subtitle { font-size: 18px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.2; }
@@ -91,32 +88,86 @@ A website only for someone.
   
   .ru-line { font-family: var(--font-ru); font-size: 16px; color: var(--text-muted); margin-top: 12px; padding: 12px; background: var(--ru-bg); border: 2px dashed var(--border-main); line-height: 1.45; }
   .ru-line strong { color: var(--text-main); background: var(--sheet-bg); padding: 0 4px; font-weight: bold; }
+  
   @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
+
+  /* --- STYLES ECRAN DE FIN --- */
+  .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
+  .result-score { font-size: 80px; margin-bottom: 10px; font-weight: bold; }
+  
+  .result-rgb { 
+    animation: rainbow 2s linear infinite, pulse 0.5s infinite alternate; 
+    text-shadow: 0 0 15px currentColor;
+  }
+  .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
+  .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
+  .result-orange { color: #ff8c00; }
+  .result-red { color: #d90429; text-shadow: 0 0 10px #d90429; }
+  
+  .error-list { margin-top: 20px; font-size: 22px; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
+  .error-list ul { margin: 10px 0 0 0; padding-left: 20px; }
+  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; }
+  
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+  @keyframes rainbow {
+    0% { color: #ff0000; } 17% { color: #ff00ff; } 33% { color: #0000ff; }
+    50% { color: #00ffff; } 67% { color: #00ff00; } 83% { color: #ffff00; } 100% { color: #ff0000; }
+  }
+  
+  /* Confettis */
+  .confetti { position: absolute; width: 12px; height: 12px; opacity: 0.9; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
 </style>
 </head>
 <body>
 
 <div class="top-buttons">
+  <button id="theme-sakura" class="nav-btn" aria-label="Thème Sakura">🌸 OFF</button>
+  <button id="theme-toggle" class="nav-btn" aria-label="Basculer le thème">PWR OFF</button>
   <button id="bgm-toggle" class="nav-btn" aria-label="Musique">🎵 OFF</button>
-  <button id="theme-toggle" class="nav-btn" aria-label="Basculer le thème">PWR</button>
 </div>
 
 <div id="sheet"><div id="content"></div></div>
 
 <script>
-/* THEME */
+/* --- THEMES (Clair, Sombre, Sakura) --- */
 const themeToggleBtn = document.getElementById("theme-toggle");
+const sakuraToggleBtn = document.getElementById("theme-sakura");
 const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-let isDark = localStorage.getItem("theme") === "dark" || (!localStorage.getItem("theme") && prefersDark);
-function updateTheme() {
-  document.body.classList.toggle("dark-mode", isDark);
-  themeToggleBtn.textContent = isDark ? "ON " : "OFF";
-  themeToggleBtn.style.color = isDark ? "var(--correct-color)" : "var(--text-main)";
-}
-updateTheme();
-themeToggleBtn.addEventListener("click", () => { isDark = !isDark; localStorage.setItem("theme", isDark ? "dark" : "light"); updateTheme(); });
 
-/* MUSIC */
+// Initialise le thème (light, dark, sakura)
+let currentTheme = localStorage.getItem("theme") || (prefersDark ? "dark" : "light");
+
+function applyTheme() {
+  document.body.classList.remove("dark-mode", "sakura-mode");
+  themeToggleBtn.textContent = "PWR OFF";
+  themeToggleBtn.style.color = "var(--text-main)";
+  sakuraToggleBtn.textContent = "🌸 OFF";
+  
+  if (currentTheme === "dark") {
+    document.body.classList.add("dark-mode");
+    themeToggleBtn.textContent = "PWR ON";
+    themeToggleBtn.style.color = "var(--correct-color)";
+  } else if (currentTheme === "sakura") {
+    document.body.classList.add("sakura-mode");
+    sakuraToggleBtn.textContent = "🌸 ON";
+  }
+}
+applyTheme();
+
+themeToggleBtn.addEventListener("click", () => {
+  currentTheme = currentTheme === "dark" ? "light" : "dark";
+  localStorage.setItem("theme", currentTheme);
+  applyTheme();
+});
+
+sakuraToggleBtn.addEventListener("click", () => {
+  currentTheme = currentTheme === "sakura" ? "light" : "sakura";
+  localStorage.setItem("theme", currentTheme);
+  applyTheme();
+});
+
+/* --- MUSIC --- */
 const bgmToggleBtn = document.getElementById("bgm-toggle");
 const bgMusic = new Audio('music.mp3'); 
 bgMusic.loop = true; bgMusic.volume = 0.3;
@@ -127,7 +178,7 @@ bgmToggleBtn.addEventListener("click", () => {
   isMusicPlaying = !isMusicPlaying;
 });
 
-/* AUDIO SFX */
+/* --- AUDIO SFX --- */
 let audioCtx;
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
 function playSound(type) {
@@ -143,25 +194,49 @@ function playSound(type) {
     gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
     osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'victory') {
-    // Petit arpège joyeux
     osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
     [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
     osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
   } else if (type === 'small_victory') {
-    // Petit son de réussite
     osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
     [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
     osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
   } else if (type === 'defeat') {
-    // Petit arpège triste descendant (mini défaite)
     osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
     [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
     osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
+  } else if (type === 'very_sad') {
+    osc.type = 'triangle'; 
+    osc.frequency.setValueAtTime(200, audioCtx.currentTime);
+    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
+    gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+  } else if (type === 'perfect') {
+    // Fanfare épique
+    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51, 1567.98];
+    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+    
+    // Bruit blanc pour simuler des applaudissements "8-bit"
+    const bufferSize = audioCtx.sampleRate * 2;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+    const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 800;
+    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(0.03, audioCtx.currentTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
+    noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+    noise.start(audioCtx.currentTime);
   }
 }
+
 
 /* DATA - MEGA BASE DE DONNEES (Sélection des verbes principaux° */
 const VERBS = [
@@ -385,7 +460,6 @@ window.insertAccent = function(char) {
 };
 
 function pickQuestion(activeTenses) {
-  // Disparition de la mécanique d'erreur. Choix 100% aléatoire.
   const tenses = TENSE_ORDER.filter((t) => activeTenses[t]); 
   const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
   const tense = (tenses.length ? tenses : TENSE_ORDER)[Math.floor(Math.random() * (tenses.length || TENSE_ORDER.length))];
@@ -427,16 +501,26 @@ function render() {
     return;
   }
 
- // ECRAN DE FIN DE SESSION
+  // ECRAN DE FIN DE SESSION
   if (state.isFinished) {
     let resultClass, message, sound;
-    if (state.sessionScore >= 17) { resultClass = 'result-golden'; message = "EXCELLENT !"; sound = 'victory'; }
-    else if (state.sessionScore > 12) { resultClass = 'result-green'; message = "BIEN JOUÉ !"; sound = 'small_victory'; }
-    else { resultClass = 'result-orange'; message = "NE LÂCHE RIEN !"; sound = 'defeat'; } // Utilisation du nouveau son
     
-    // Génération des confettis si excellent score
+    // Logique des paliers
+    if (state.sessionScore === 20) { 
+      resultClass = 'result-rgb'; message = "PARFAIT ! SCORE MAXIMAL ! INCROYABLE !"; sound = 'perfect'; 
+    } else if (state.sessionScore >= 16) { 
+      resultClass = 'result-golden'; message = "EXCELLENT ! T'ES UN BOSS !"; sound = 'victory'; 
+    } else if (state.sessionScore >= 10) { 
+      resultClass = 'result-green'; message = "BIEN JOUÉ ! ENCORE UN EFFORT !"; sound = 'small_victory'; 
+    } else if (state.sessionScore > 0) { 
+      resultClass = 'result-orange'; message = "TU PEUX MIEUX FAIRE !"; sound = 'defeat'; 
+    } else { 
+      resultClass = 'result-red'; message = "RÉVISE, PUIS RETENTE TA CHANCE !"; sound = 'very_sad'; 
+    }
+    
+    // Génération des confettis si score >= 16
     let confettiHTML = '';
-    if (state.sessionScore >= 17) {
+    if (state.sessionScore >= 16) {
         for(let i=0; i<30; i++) {
             confettiHTML += `<div class="confetti" style="left:${Math.random()*100}%; top:-20px; animation-delay:${Math.random()*2}s; background:hsl(${Math.random()*360},100%,50%)"></div>`;
         }
@@ -466,7 +550,6 @@ function render() {
 
   const accentBar = state.feedback === null ? `<div class="accent-bar">${['é','è','ê','à','ç','î','ô'].map(char => `<button class="accent-btn" tabindex="-1" onclick="insertAccent('${char}')">${char}</button>`).join("")}</div>` : "";
   
-  // Bouton change si c'est la dernière question
   const btnLabel = state.feedback === null ? "VALIDATE" : (state.questionCount >= 19 ? "VOIR LE SCORE >" : "NEXT LEVEL >");
 
   content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:16px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
