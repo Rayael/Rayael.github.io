@@ -28,6 +28,23 @@ A website only for someone.
     --input-focus: #ff0055; --correct-color: #39ff14; --incorrect-color: #ff0055;
     --ru-bg: rgba(0, 255, 204, 0.1);
   }
+  /* --- STYLES ECRAN DE FIN --- */
+  .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
+  .result-score { font-size: 80px; margin-bottom: 10px; font-weight: bold; }
+  
+  .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
+  .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
+  .result-orange { color: #ff8c00; }
+  
+  .error-list { margin-top: 20px; font-size: 22px; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
+  .error-list ul { margin: 10px 0 0 0; padding-left: 20px; }
+  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; }
+  
+  @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
+  
+  /* Confettis */
+  .confetti { position: absolute; width: 12px; height: 12px; opacity: 0.9; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }
+  @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
 
   * { box-sizing: border-box; border-radius: 0 !important; }
   html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-color); font-family: var(--font-retro); transition: background-color 0.3s ease; color: var(--text-main); }
@@ -116,14 +133,34 @@ function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || win
 function playSound(type) {
   initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
   osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+  
   if (type === 'correct') {
     osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
     gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-  } else {
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+  } else if (type === 'incorrect') {
     osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
     gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+  } else if (type === 'victory') {
+    // Petit arpège joyeux
+    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
+  } else if (type === 'small_victory') {
+    // Petit son de réussite
+    osc.type = 'square'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
+  } else if (type === 'defeat') {
+    // Petit arpège triste descendant (mini défaite)
+    osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(0.05, audioCtx.currentTime);
+    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
   }
-  osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
 }
 
 /* DATA - MEGA BASE DE DONNEES (Sélection des verbes principaux° */
@@ -348,24 +385,76 @@ window.insertAccent = function(char) {
 };
 
 function pickQuestion(activeTenses) {
-  if (state.errorQueue.length > 0 && Math.random() < 0.5) { const err = state.errorQueue[0]; if (activeTenses[err.tense]) return { ...err, isReview: true }; state.errorQueue.shift(); }
-  const tenses = TENSE_ORDER.filter((t) => activeTenses[t]); const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
+  // Disparition de la mécanique d'erreur. Choix 100% aléatoire.
+  const tenses = TENSE_ORDER.filter((t) => activeTenses[t]); 
+  const verb = VERBS[Math.floor(Math.random() * VERBS.length)];
   const tense = (tenses.length ? tenses : TENSE_ORDER)[Math.floor(Math.random() * (tenses.length || TENSE_ORDER.length))];
   const idx = Math.floor(Math.random() * 6);
-  return { verb, tense, idx, answers: getAnswers(verb, tense, idx), isReview: false };
+  return { verb, tense, idx, answers: getAnswers(verb, tense, idx) };
 }
 
-let state = { started: false, ignoreAccents: false, activeTenses: { present: true, imparfait: true, futur: true, passeCompose: true, plusQueParfait: false, conditionnel: false }, question: null, feedback: null, streak: 0, bestStreak: parseInt(localStorage.getItem("bestStreak") || "0", 10), errorQueue: [] };
+let state = { 
+  started: false, 
+  ignoreAccents: false, 
+  activeTenses: { present: true, imparfait: true, futur: true, passeCompose: true, plusQueParfait: false, conditionnel: false }, 
+  question: null, 
+  feedback: null, 
+  questionCount: 0, 
+  sessionScore: 0, 
+  sessionErrors: [], 
+  isFinished: false 
+};
+
 const content = document.getElementById("content");
 
 function toggleTense(t) { const next = { ...state.activeTenses, [t]: !state.activeTenses[t] }; if (!Object.values(next).some(Boolean)) return; state.activeTenses = next; render(); }
 
 function render() {
   if (!state.started) {
-    content.innerHTML = `<div style="padding-top:10px;padding-bottom:10px;"><h1>Conjugaison 3e gr.</h1><p class="subtitle">► Mode Entraînement Avancé</p><div class="section-label">SELECT. TEMPS</div><div class="chip-row" id="tense-chips">${TENSE_ORDER.map(t => `<button class="chip ${state.activeTenses[t] ? "active" : ""}" data-tense="${t}">${TENSE_LABELS[t]}</button>`).join("")}</div><div style="margin-top:28px;"><button class="btn" id="start-btn">► START ◄</button></div></div>`;
+    content.innerHTML = `<div style="padding-top:10px;padding-bottom:10px;"><h1>Conjugaison 3e gr.</h1><p class="subtitle">► Session de 20 verbes</p><div class="section-label">SELECT. TEMPS</div><div class="chip-row" id="tense-chips">${TENSE_ORDER.map(t => `<button class="chip ${state.activeTenses[t] ? "active" : ""}" data-tense="${t}">${TENSE_LABELS[t]}</button>`).join("")}</div><div style="margin-top:28px;"><button class="btn" id="start-btn">► START SESSION ◄</button></div></div>`;
     document.querySelectorAll(".chip").forEach(btn => btn.addEventListener("click", () => toggleTense(btn.dataset.tense)));
-    document.getElementById("start-btn").addEventListener("click", () => { initAudio(); state.streak = 0; state.question = pickQuestion(state.activeTenses); state.feedback = null; state.started = true; render(); }); return;
+    document.getElementById("start-btn").addEventListener("click", () => { 
+      initAudio(); 
+      state.questionCount = 0; 
+      state.sessionScore = 0; 
+      state.sessionErrors = []; 
+      state.isFinished = false; 
+      state.question = pickQuestion(state.activeTenses); 
+      state.feedback = null; 
+      state.started = true; 
+      render(); 
+    }); 
+    return;
   }
+
+ // ECRAN DE FIN DE SESSION
+  if (state.isFinished) {
+    let resultClass, message, sound;
+    if (state.sessionScore >= 17) { resultClass = 'result-golden'; message = "EXCELLENT !"; sound = 'victory'; }
+    else if (state.sessionScore > 12) { resultClass = 'result-green'; message = "BIEN JOUÉ !"; sound = 'small_victory'; }
+    else { resultClass = 'result-orange'; message = "NE LÂCHE RIEN !"; sound = 'defeat'; } // Utilisation du nouveau son
+    
+    // Génération des confettis si excellent score
+    let confettiHTML = '';
+    if (state.sessionScore >= 17) {
+        for(let i=0; i<30; i++) {
+            confettiHTML += `<div class="confetti" style="left:${Math.random()*100}%; top:-20px; animation-delay:${Math.random()*2}s; background:hsl(${Math.random()*360},100%,50%)"></div>`;
+        }
+    }
+
+    // Récupérer les erreurs uniques
+    const uniqueErrors = [...new Set(state.sessionErrors)];
+    let errorsHTML = uniqueErrors.length > 0 
+      ? `<div class="error-list"><p style="color:var(--text-main); margin-top:0; font-weight:bold;">Verbes à réviser :</p><ul>${uniqueErrors.map(v => `<li>${v}</li>`).join('')}</ul></div>` 
+      : `<div class="error-list"><p style="color:var(--correct-color); font-weight:bold; margin:0;">Score Parfait ! Aucun verbe à réviser.</p></div>`;
+
+    content.innerHTML = `${confettiHTML}<div class="result-container"><p class="subtitle" style="margin-bottom:0;">SCORE FINAL</p><div class="result-score ${resultClass}">${state.sessionScore}/20</div><p class="subtitle" style="color:var(--text-main);">${message}</p>${errorsHTML}<button class="btn" id="menu-btn" style="margin-top:30px;">RETOUR MENU</button></div>`;
+    
+    playSound(sound);
+    document.getElementById("menu-btn").addEventListener("click", () => { state.started = false; render(); });
+    return;
+  }
+
   const q = state.question; const disabled = state.feedback !== null ? "disabled" : ""; const displayPronoun = formatPronoun(PRONOUNS[q.idx], q.answers[0]);
   const frenchContext = q.verb.ctx[q.tense][0]; const russianContext = q.verb.ctx[q.tense][1];
   
@@ -376,17 +465,42 @@ function render() {
   }
 
   const accentBar = state.feedback === null ? `<div class="accent-bar">${['é','è','ê','à','ç','î','ô'].map(char => `<button class="accent-btn" tabindex="-1" onclick="insertAccent('${char}')">${char}</button>`).join("")}</div>` : "";
-  content.innerHTML = `<div class="score-row"><div class="stats"><span>STREAK: ${state.streak}</span><span style="font-size:16px; color:var(--text-muted)">BEST: ${state.bestStreak}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]} ${q.isReview ? "⚠️" : ""}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${state.feedback === null ? "VALIDATE" : "NEXT LEVEL >"}</button>`;
+  
+  // Bouton change si c'est la dernière question
+  const btnLabel = state.feedback === null ? "VALIDATE" : (state.questionCount >= 19 ? "VOIR LE SCORE >" : "NEXT LEVEL >");
+
+  content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:16px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
 
   const input = document.getElementById("answer-input"); if (!disabled) input.focus();
+  
   function validate() {
-    if (state.feedback !== null) { state.question = pickQuestion(state.activeTenses); state.feedback = null; render(); return; }
+    if (state.feedback !== null) { 
+      state.questionCount++;
+      if (state.questionCount >= 20) {
+        state.isFinished = true;
+      } else {
+        state.question = pickQuestion(state.activeTenses); 
+      }
+      state.feedback = null; 
+      render(); 
+      return; 
+    }
+    
     if (!input.value.trim()) return;
     const ok = q.answers.some(a => normalize(a, state.ignoreAccents) === normalize(input.value, state.ignoreAccents));
-    if (ok) { state.streak++; if (state.streak > state.bestStreak) { state.bestStreak = state.streak; localStorage.setItem("bestStreak", state.bestStreak); } if (q.isReview) state.errorQueue.shift(); } 
-    else { state.streak = 0; if (!state.errorQueue.some(item => item.verb.inf === q.verb.inf && item.tense === q.tense && item.idx === q.idx)) { state.errorQueue.push({ verb: q.verb, tense: q.tense, idx: q.idx, answers: q.answers }); } }
-    state.feedback = ok ? "correct" : "incorrect"; playSound(state.feedback); render(); document.getElementById("answer-input").value = input.value;
+    
+    if (ok) { 
+      state.sessionScore++; 
+    } else { 
+      state.sessionErrors.push(q.verb.inf); 
+    }
+    
+    state.feedback = ok ? "correct" : "incorrect"; 
+    playSound(state.feedback); 
+    render(); 
+    document.getElementById("answer-input").value = input.value;
   }
+  
   input.addEventListener("keydown", (e) => { if (e.key === "Enter") validate(); });
   document.getElementById("action-btn").addEventListener("click", validate);
   document.getElementById("menu-btn").addEventListener("click", () => { state.started = false; render(); });
