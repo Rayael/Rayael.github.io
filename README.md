@@ -7,16 +7,15 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black" />
 <title>Conjugaison</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=VT323&display=swap');
-
   :root {
     --bg-color: #9fb8ad; --sheet-bg: #e0e6ed; --border-main: #1a1a1a;
     --text-main: #1a1a1a; --text-muted: #525252; --chip-bg: #c5d1db;
     --chip-active-bg: #1a1a1a; --chip-active-text: #e0e6ed;
     --input-focus: #f72585; --correct-color: #008a00; --incorrect-color: #d90429;
     --ru-bg: rgba(0, 0, 0, 0.08);
-    --font-retro: 'VT323', 'Courier New', Courier, monospace;
-    --font-ru: 'Courier New', Courier, monospace;
+    /* Polices modernes et ultra-lisibles */
+    --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --font-ru: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
   
   body.dark-mode {
@@ -33,7 +32,7 @@
     --sheet-bg: #fff0f5 !important; 
     --border-main: #b03060 !important;
     --text-main: #4a3636 !important; 
-    --text-muted: #8b4c5e !important; /* Bordeaux foncé pour une excellente lisibilité */
+    --text-muted: #8b4c5e !important; 
     --chip-bg: #ffb7c5 !important;
     --chip-active-bg: #b03060 !important; 
     --chip-active-text: #fff !important;
@@ -44,71 +43,92 @@
   }
 
   * { box-sizing: border-box; border-radius: 0 !important; }
-  html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-color); font-family: var(--font-retro); transition: background-color 0.3s ease; color: var(--text-main); }
-  body { display: flex; justify-content: center; padding: 16px 8px; }
+  html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-color); font-family: var(--font-main); transition: background-color 0.3s ease; color: var(--text-main); }
   
-  .top-buttons { position: absolute; top: 16px; right: 16px; display: flex; gap: 8px; z-index: 10; flex-wrap: wrap; justify-content: flex-end; }
-  .nav-btn { background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); font-size: 18px; cursor: pointer; padding: 6px 10px; font-family: var(--font-retro); box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; }
+  body { 
+    display: flex; 
+    justify-content: center; 
+    padding: 16px 8px; 
+    position: relative; 
+  }
+  
+  /* --- MENU SANDWICH --- */
+  .top-buttons { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; z-index: 100; }
+  .nav-btn { background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; font-family: var(--font-main); box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; white-space: nowrap;}
   .nav-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-main); }
   
+  #hamburger-btn { font-size: 18px; }
+  
+  #dropdown-menu {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    pointer-events: none;
+    align-items: flex-end;
+  }
+  #dropdown-menu.show {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
   #sheet { position: relative; width: 100%; max-width: 480px; background: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; z-index: 2;}
   #content { padding: 24px; }
-  h1 { font-weight: normal; font-size: 36px; margin: 0 0 10px 0; text-transform: uppercase; text-shadow: 2px 2px 0px var(--text-muted); }
-  .subtitle { font-size: 18px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.2; }
-  .section-label { font-size: 20px; text-transform: uppercase; margin: 24px 0 12px; border-bottom: 2px dashed var(--text-muted); display: inline-block; }
+  h1 { font-weight: 800; font-size: 28px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -0.5px; }
+  .subtitle { font-size: 16px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.4; font-weight: 500; }
+  .section-label { font-size: 14px; font-weight: 700; text-transform: uppercase; margin: 24px 0 12px; border-bottom: 2px dashed var(--text-muted); display: inline-block; letter-spacing: 0.5px; }
   
-  .chip-row { display: flex; flex-wrap: wrap; gap: 12px; }
-  .chip { font-size: 18px; padding: 6px 12px; border: 2px solid var(--border-main); background: var(--chip-bg); color: var(--text-main); cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); text-transform: uppercase; }
+  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
+  .chip { font-size: 14px; font-weight: 600; padding: 8px 14px; border: 2px solid var(--border-main); background: var(--chip-bg); color: var(--text-main); cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); text-transform: uppercase; }
   .chip:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-main); }
   .chip.active { background: var(--chip-active-bg); border-color: var(--chip-active-bg); color: var(--chip-active-text); }
   
-  .btn { font-size: 22px; text-transform: uppercase; padding: 12px 20px; background: var(--sheet-bg); color: var(--text-main); border: 4px solid var(--border-main); cursor: pointer; width: 100%; margin-top: 20px; box-shadow: 6px 6px 0px var(--border-main); }
+  .btn { font-family: var(--font-main); font-size: 18px; font-weight: 800; text-transform: uppercase; padding: 14px 20px; background: var(--sheet-bg); color: var(--text-main); border: 4px solid var(--border-main); cursor: pointer; width: 100%; margin-top: 20px; box-shadow: 6px 6px 0px var(--border-main); }
   .btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0px var(--border-main); }
   
-  .score-row { font-size: 20px; display: flex; justify-content: space-between; align-items: flex-end; }
-  .stats { display: flex; flex-direction: column; line-height: 1.1; }
+  .score-row { font-size: 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: flex-end; }
+  .stats { display: flex; flex-direction: column; line-height: 1.3; }
   .hr { border: none; border-top: 4px dotted var(--border-main); margin: 16px 0; }
   
   .prompt-header { margin-bottom: 16px; }
-  .infinitive { font-size: 32px; text-transform: uppercase; }
-  .tense-tag { font-size: 20px; color: var(--text-muted); }
+  .infinitive { font-size: 26px; font-weight: 800; text-transform: uppercase; }
+  .tense-tag { font-size: 16px; font-weight: 600; color: var(--text-muted); }
   
-  .sentence-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; font-size: 26px; line-height: 1.6; margin-bottom: 12px; }
-  #answer-input { font-family: var(--font-retro); font-size: 26px; color: var(--input-focus); background: transparent; border: none; border-bottom: 4px solid var(--border-main); padding: 4px 8px; width: 150px; text-align: center; }
-  #answer-input::placeholder { color: var(--text-muted); font-size: 20px; }
+  .sentence-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; font-size: 20px; font-weight: 500; line-height: 1.6; margin-bottom: 12px; }
+  #answer-input { font-family: var(--font-main); font-size: 22px; font-weight: 700; color: var(--input-focus); background: transparent; border: none; border-bottom: 4px solid var(--border-main); padding: 4px 8px; width: 150px; text-align: center; }
+  #answer-input::placeholder { color: var(--text-muted); font-size: 18px; font-weight: 500; }
   #answer-input:focus { outline: none; border-bottom-color: var(--input-focus); background: var(--ru-bg); }
   
   .accent-bar { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .accent-btn { font-family: var(--font-retro); background: var(--chip-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 20px; padding: 4px 10px; cursor: pointer; box-shadow: 2px 2px 0px var(--border-main); }
+  .accent-btn { font-family: var(--font-main); font-weight: 700; background: var(--chip-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 16px; padding: 6px 12px; cursor: pointer; box-shadow: 2px 2px 0px var(--border-main); }
   .accent-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--border-main); }
 
   .feedback-zone { min-height: 90px; margin: 20px 0; }
-  .correct-mark { font-size: 24px; color: var(--correct-color); margin-bottom: 8px; animation: blink 0.5s ease-in-out; }
-  .incorrect-mark { font-size: 24px; color: var(--incorrect-color); margin-bottom: 8px; }
+  .correct-mark { font-size: 18px; font-weight: 700; color: var(--correct-color); margin-bottom: 8px; animation: blink 0.5s ease-in-out; }
+  .incorrect-mark { font-size: 18px; font-weight: 700; color: var(--incorrect-color); margin-bottom: 8px; }
   
-  .ru-line { font-family: var(--font-ru); font-size: 16px; color: var(--text-muted); margin-top: 12px; padding: 12px; background: var(--ru-bg); border: 2px dashed var(--border-main); line-height: 1.45; }
-  .ru-line strong { color: var(--text-main); background: var(--sheet-bg); padding: 0 4px; font-weight: bold; }
+  .ru-line { font-family: var(--font-ru); font-size: 15px; color: var(--text-muted); margin-top: 12px; padding: 12px; background: var(--ru-bg); border: 2px dashed var(--border-main); line-height: 1.5; }
+  .ru-line strong { color: var(--text-main); background: var(--sheet-bg); padding: 2px 6px; font-weight: 700; }
   
   @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
   /* --- STYLES ECRAN DE FIN --- */
   .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
-  .result-score { 
-    font-size: 80px; 
-    margin-bottom: 10px; 
-    font-weight: bold;
-    -webkit-text-stroke: 3px var(--border-main); /* Effet pixel contour noir hyper lisible */
-  }
-  
+  .result-score { font-size: 72px; margin-bottom: 10px; font-weight: 900; -webkit-text-stroke: 2px var(--border-main); letter-spacing: -2px; }
   .result-rgb { animation: rainbow 2s linear infinite, pulse 0.5s infinite alternate; text-shadow: 0 0 15px currentColor; }
   .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
   .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
   .result-orange { color: #ff8c00; }
   .result-red { color: #d90429; text-shadow: 0 0 10px #d90429; }
   
-  .error-list { margin-top: 20px; font-size: 22px; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
+  .error-list { margin-top: 20px; font-size: 16px; font-weight: 600; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
   .error-list ul { margin: 10px 0 0 0; padding-left: 20px; }
-  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; }
+  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; font-weight: 700; }
   
   @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
   @keyframes rainbow {
@@ -121,51 +141,37 @@
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
 
   /* --- EASTER EGG (Coeur et Pop-up) --- */
-  #secret-heart {
-    position: fixed;
-    bottom: 30px;
-    left: 20px;
-    font-size: 32px;
-    color: #ff1493;
-    opacity: 0.4;
-    cursor: pointer;
-    user-select: none;
-    z-index: 100;
-    font-family: var(--font-retro);
-    text-shadow: 2px 2px 0px var(--border-main);
-    transition: transform 0.1s;
+  #secret-heart { 
+    position: absolute; 
+    bottom: 20px; 
+    left: 20px; 
+    font-size: 36px; 
+    color: #ff1493; 
+    opacity: 0.7; 
+    cursor: pointer; 
+    user-select: none; 
+    z-index: 100; 
+    font-family: var(--font-main); 
+    -webkit-text-stroke: 2px var(--border-main); 
+    text-shadow: 3px 3px 0px var(--border-main); 
+    transition: transform 0.1s; 
   }
-  #secret-heart:active { transform: scale(0.8) translate(2px, 2px); }
+  #secret-heart:active { transform: scale(0.8) translate(4px, 4px); text-shadow: 0px 0px 0px var(--border-main); }
 
-  #love-popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(0.5);
-    background: var(--sheet-bg);
-    color: #ff1493;
-    border: 6px solid #ff1493;
-    box-shadow: 8px 8px 0px var(--border-main);
-    padding: 20px 30px;
-    font-size: 36px;
-    text-align: center;
-    z-index: 9999;
-    opacity: 0;
-    pointer-events: none;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  }
-  #love-popup.show {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+  #love-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: var(--sheet-bg); color: #ff1493; border: 6px solid #ff1493; box-shadow: 8px 8px 0px var(--border-main); padding: 20px 30px; font-size: 28px; font-weight: 800; text-align: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  #love-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 </style>
 </head>
 <body>
 
+<!-- MENU SANDWICH -->
 <div class="top-buttons">
-  <button id="theme-sakura" class="nav-btn" aria-label="Thème Sakura">🌸 OFF</button>
-  <button id="theme-toggle" class="nav-btn" aria-label="Basculer le thème">PWR OFF</button>
-  <button id="bgm-toggle" class="nav-btn" aria-label="Musique">🎵 OFF</button>
+  <button id="hamburger-btn" class="nav-btn" aria-label="Menu">☰ MENU</button>
+  <div id="dropdown-menu">
+    <button id="theme-sakura" class="nav-btn" aria-label="Thème Sakura">🌸 OFF</button>
+    <button id="theme-toggle" class="nav-btn" aria-label="Basculer le thème">PWR OFF</button>
+    <button id="bgm-toggle" class="nav-btn" aria-label="Musique">🎵 OFF</button>
+  </div>
 </div>
 
 <!-- L'Easter Egg Cliquable -->
@@ -175,6 +181,21 @@
 <div id="sheet"><div id="content"></div></div>
 
 <script>
+/* --- MENU SANDWICH LOGIC --- */
+const hamburgerBtn = document.getElementById("hamburger-btn");
+const dropdownMenu = document.getElementById("dropdown-menu");
+
+hamburgerBtn.addEventListener("click", (e) => {
+  dropdownMenu.classList.toggle("show");
+  e.stopPropagation(); 
+});
+
+document.addEventListener("click", (e) => {
+  if (!hamburgerBtn.contains(e.target) && !dropdownMenu.contains(e.target)) {
+    dropdownMenu.classList.remove("show");
+  }
+});
+
 /* --- THEMES (Clair, Sombre, Sakura) --- */
 const themeToggleBtn = document.getElementById("theme-toggle");
 const sakuraToggleBtn = document.getElementById("theme-sakura");
@@ -214,7 +235,7 @@ sakuraToggleBtn.addEventListener("click", () => {
 /* --- MUSIC --- */
 const bgmToggleBtn = document.getElementById("bgm-toggle");
 const bgMusic = new Audio('music.mp3'); 
-bgMusic.loop = true; bgMusic.volume = 0.2;
+bgMusic.loop = true; bgMusic.volume = 0.3;
 let isMusicPlaying = false;
 bgmToggleBtn.addEventListener("click", () => {
   if (isMusicPlaying) { bgMusic.pause(); bgmToggleBtn.textContent = "🎵 OFF"; } 
@@ -227,105 +248,64 @@ let audioCtx;
 function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
 
 function playSound(type) {
-  initAudio(); 
-  const osc = audioCtx.createOscillator(); 
-  const gainNode = audioCtx.createGain();
-  osc.connect(gainNode); 
-  gainNode.connect(audioCtx.destination);
+  initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
+  osc.connect(gainNode); gainNode.connect(audioCtx.destination);
   
-  // --- VOLUME DES EFFETS SONORES (SFX) ---
-  // Modifie cette valeur pour baisser ou augmenter tous les bruitages (ex: 0.01 pour très bas, 0.05 pour normal)
-  const sfxVolume = 0.1; 
+  const sfxVolume = 0.02; 
   
   if (type === 'correct') {
-    osc.type = 'square'; 
-    osc.frequency.setValueAtTime(440, audioCtx.currentTime); 
-    osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); 
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 0.3);
+    osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'incorrect') {
-    osc.type = 'sawtooth'; 
-    osc.frequency.setValueAtTime(300, audioCtx.currentTime); 
-    osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); 
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 0.3);
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
   } else if (type === 'victory') {
-    osc.type = 'square'; 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { 
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); 
-    });
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 0.8);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
   } else if (type === 'small_victory') {
-    osc.type = 'square'; 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [440, 554.37, 659.25].forEach((freq, i) => { 
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); 
-    });
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 0.6);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
   } else if (type === 'defeat') {
-    osc.type = 'sawtooth'; 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { 
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); 
-    });
+    osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 1.0);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
   } else if (type === 'very_sad') {
     osc.type = 'triangle'; 
     osc.frequency.setValueAtTime(200, audioCtx.currentTime);
     osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
     gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
   } else if (type === 'perfect') {
-    osc.type = 'square'; 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
     const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51, 1567.98];
-    notes.forEach((freq, i) => { 
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); 
-    });
+    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
     
-    // 8-bit applaudissements proportionnels au sfxVolume
     const bufferSize = audioCtx.sampleRate * 2;
     const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
     const data = buffer.getChannelData(0);
     for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-    const noise = audioCtx.createBufferSource(); 
-    noise.buffer = buffer;
-    const noiseFilter = audioCtx.createBiquadFilter(); 
-    noiseFilter.type = 'lowpass'; 
-    noiseFilter.frequency.value = 800;
-    const noiseGain = audioCtx.createGain(); 
-    noiseGain.gain.setValueAtTime(sfxVolume * 0.6, audioCtx.currentTime);
+    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+    const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 800;
+    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(sfxVolume * 0.6, audioCtx.currentTime);
     noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
-    noise.connect(noiseFilter); 
-    noiseFilter.connect(noiseGain); 
-    noiseGain.connect(audioCtx.destination);
+    noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
     noise.start(audioCtx.currentTime);
   } else if (type === 'love') {
-    osc.type = 'square'; 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51]; 
-    notes.forEach((freq, i) => { 
-      osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); 
-    });
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); });
     gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
-    osc.start(audioCtx.currentTime); 
-    osc.stop(audioCtx.currentTime + 0.7);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.7);
   }
 }
 
@@ -618,7 +598,6 @@ function render() {
   if (state.isFinished) {
     let resultClass, message, sound;
     
-    // Logique des paliers
     if (state.sessionScore === 20) { 
       resultClass = 'result-rgb'; message = "PARFAIT ! SCORE MAXIMAL ! INCROYABLE !"; sound = 'perfect'; 
     } else if (state.sessionScore > 17) { 
@@ -631,7 +610,6 @@ function render() {
       resultClass = 'result-red'; message = "RÉVISE, PUIS RETENTE TA CHANCE !"; sound = 'very_sad'; 
     }
     
-    // Génération des confettis si score > 17
     let confettiHTML = '';
     if (state.sessionScore > 17) {
         for(let i=0; i<30; i++) {
@@ -639,7 +617,6 @@ function render() {
         }
     }
 
-    // Récupérer les erreurs uniques
     const uniqueErrors = [...new Set(state.sessionErrors)];
     let errorsHTML = uniqueErrors.length > 0 
       ? `<div class="error-list"><p style="color:var(--text-main); margin-top:0; font-weight:bold;">Verbes à réviser :</p><ul>${uniqueErrors.map(v => `<li>${v}</li>`).join('')}</ul></div>` 
@@ -665,7 +642,7 @@ function render() {
   
   const btnLabel = state.feedback === null ? "VALIDATE" : (state.questionCount >= 19 ? "VOIR LE SCORE >" : "NEXT LEVEL >");
 
-  content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:16px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
+  content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:14px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
 
   const input = document.getElementById("answer-input"); if (!disabled) input.focus();
   
