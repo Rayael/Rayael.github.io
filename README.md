@@ -8,45 +8,51 @@
 <title>Conjugaison</title>
 <style>
   :root {
-    /* NOUVEAU THEME PAR DEFAUT : Bleu Nuit / Clair & Esthétique */
-    --bg-color: #e2e8f0;       /* Fond général gris-bleu très clair */
-    --sheet-bg: #ffffff;       /* Fond de la carte blanc pur */
-    --border-main: #0f172a;    /* Bleu nuit très profond (presque noir) */
-    --text-main: #1e293b;      /* Bleu nuit légèrement adouci pour la lecture */
-    --text-muted: #64748b;     /* Gris-bleu pour les textes secondaires */
-    --chip-bg: #f1f5f9;        /* Fond des boutons inactifs */
-    --chip-active-bg: #2563eb; /* Bleu vif pour les éléments actifs */
+    /* THEME CLAIR PAR DEFAUT */
+    --bg-color: #e2e8f0;       
+    --sheet-bg: #ffffff;       
+    --border-main: #0f172a;    
+    --text-main: #1e293b;      
+    --text-muted: #64748b;     
+    --chip-bg: #f8fafc;        /* Très clair pour l'état inactif */
+    --chip-active-bg: #2563eb; 
     --chip-active-text: #ffffff;
-    --input-focus: #2563eb;    /* Curseur et input bleu vif */
-    --correct-color: #10b981;  /* Vert émeraude moderne */
-    --incorrect-color: #ef4444;/* Rouge vif moderne */
-    --ru-bg: rgba(37, 99, 235, 0.08); /* Fond bleuté léger pour le russe */
+    --input-focus: #2563eb;    
+    --correct-color: #10b981;  
+    --incorrect-color: #ef4444;
+    --ru-bg: rgba(37, 99, 235, 0.08); 
     
-    /* Polices modernes et ultra-lisibles */
     --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-ru: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
   
-  /* --- THEME SOMBRE (Cyberpunk) --- */
+  /* --- THEME SOMBRE (Bleu Abyssal) --- */
   body.dark-mode {
-    --bg-color: #121212; --sheet-bg: #1a1a1a; --border-main: #00ffcc;
-    --text-main: #f0f0f0; --text-muted: #8c8c8c; --chip-bg: #2a2a2a;
-    --chip-active-bg: #00ffcc; --chip-active-text: #121212;
-    --input-focus: #ff0055; --correct-color: #39ff14; --incorrect-color: #ff0055;
-    --ru-bg: rgba(0, 255, 204, 0.1);
+    --bg-color: #020617;       
+    --sheet-bg: #0f172a;       
+    --border-main: #1e3a8a;    
+    --text-main: #f8fafc;      
+    --text-muted: #94a3b8;     
+    --chip-bg: #1e293b;        
+    --chip-active-bg: #1d4ed8; 
+    --chip-active-text: #ffffff;
+    --input-focus: #3b82f6;    
+    --correct-color: #10b981;  
+    --incorrect-color: #ef4444;
+    --ru-bg: rgba(59, 130, 246, 0.15); 
   }
 
   /* --- THEME SAKURA --- */
   body.sakura-mode {
     --bg-color: #ffd1dc !important; --sheet-bg: #fff0f5 !important; 
     --border-main: #b03060 !important; --text-main: #4a3636 !important; 
-    --text-muted: #8b4c5e !important; --chip-bg: #ffb7c5 !important;
+    --text-muted: #8b4c5e !important; --chip-bg: #ffe4e1 !important;
     --chip-active-bg: #b03060 !important; --chip-active-text: #fff !important;
     --input-focus: #ff1493 !important; --correct-color: #2e8b57 !important; 
     --incorrect-color: #dc143c !important; --ru-bg: rgba(255, 183, 197, 0.5) !important;
   }
 
-  * { box-sizing: border-box; border-radius: 0 !important; } /* Garde l'aspect blocky */
+  * { box-sizing: border-box; border-radius: 0 !important; }
   
   html, body { 
     margin: 0; padding: 0; min-height: 100vh; 
@@ -54,17 +60,37 @@
     transition: background-color 0.3s ease; color: var(--text-main); 
   }
   
+  /* --- TOILE DE FOND (Constellations Uniques) --- 
+     Si tu préfères une vraie image, supprime le mask-image et décommente la ligne background-image en dessous !
+  */
+  body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: var(--text-main);
+    
+    /* Motif SVG beaucoup plus large (800x800) et éparpillé pour casser l'effet de répétition */
+    -webkit-mask-image: url("data:image/svg+xml,%3Csvg width='800' height='800' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23fff' stroke='%23fff' stroke-width='0.5'%3E%3Ccircle cx='50' cy='150' r='1.5'/%3E%3Ccircle cx='120' cy='80' r='2'/%3E%3Ccircle cx='250' cy='200' r='1'/%3E%3Ccircle cx='180' cy='300' r='2.5'/%3E%3Ccircle cx='350' cy='100' r='1.5'/%3E%3Ccircle cx='400' cy='250' r='2'/%3E%3Ccircle cx='550' cy='180' r='1'/%3E%3Ccircle cx='650' cy='320' r='1.5'/%3E%3Ccircle cx='720' cy='150' r='2'/%3E%3Ccircle cx='80' cy='450' r='1.5'/%3E%3Ccircle cx='220' cy='500' r='2'/%3E%3Ccircle cx='150' cy='650' r='1'/%3E%3Ccircle cx='300' cy='720' r='1.5'/%3E%3Ccircle cx='450' cy='480' r='2'/%3E%3Ccircle cx='500' cy='600' r='1.5'/%3E%3Ccircle cx='650' cy='520' r='2'/%3E%3Ccircle cx='750' cy='680' r='1.5'/%3E%3Cline x1='50' y1='150' x2='120' y2='80'/%3E%3Cline x1='120' y1='80' x2='250' y2='200'/%3E%3Cline x1='250' y1='200' x2='180' y2='300'/%3E%3Cline x1='180' y1='300' x2='50' y2='150'/%3E%3Cline x1='350' y1='100' x2='400' y2='250'/%3E%3Cline x1='400' y1='250' x2='550' y2='180'/%3E%3Cline x1='550' y1='180' x2='720' y2='150'/%3E%3Cline x1='650' y1='320' x2='720' y2='150'/%3E%3Cline x1='650' y1='320' x2='400' y2='250'/%3E%3Cline x1='80' y1='450' x2='220' y2='500'/%3E%3Cline x1='220' y1='500' x2='300' y2='720'/%3E%3Cline x1='300' y1='720' x2='150' y2='650'/%3E%3Cline x1='150' y1='650' x2='80' y2='450'/%3E%3Cline x1='450' y1='480' x2='500' y2='600'/%3E%3Cline x1='500' y1='600' x2='650' y2='520'/%3E%3Cline x1='650' y1='520' x2='750' y2='680'/%3E%3Cline x1='750' y1='680' x2='500' y2='600'/%3E%3Cline x1='220' y1='500' x2='450' y2='480'/%3E%3Cline x1='180' y1='300' x2='80' y2='450'/%3E%3C/g%3E%3C/svg%3E");
+    
+    /* Si tu veux une vraie image, enlève le bloc -webkit-mask-image ci-dessus, et décommente ceci : */
+    /* background-image: url('ton-image-github.png'); background-size: cover; background-position: center; */
+    
+    opacity: 0.1; 
+    z-index: 1; 
+    pointer-events: none;
+  }
+
   body { 
     display: flex; 
     justify-content: center; 
-    align-items: flex-start; /* Permet un bon scroll sur mobile */
+    align-items: flex-start; 
     padding: 16px 8px; 
-    position: relative; /* Pour que l'easter egg se positionne bien au fond */
+    position: relative; 
   }
   
-  /* --- MENU SANDWICH (FIXE POUR RESTER VISIBLE) --- */
+  /* --- MENU SANDWICH --- */
   .top-buttons { 
-    position: fixed; /* Reste à l'écran même en scrollant */
+    position: fixed; 
     top: 16px; right: 16px; 
     display: flex; flex-direction: column; align-items: flex-end; gap: 8px; z-index: 100; 
   }
@@ -96,10 +122,33 @@
   .subtitle { font-size: 16px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.4; font-weight: 500; }
   .section-label { font-size: 14px; font-weight: 800; text-transform: uppercase; margin: 24px 0 12px; border-bottom: 2px dashed var(--text-muted); display: inline-block; letter-spacing: 0.5px; }
   
-  .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .chip { font-size: 14px; font-weight: 700; padding: 8px 14px; border: 2px solid var(--border-main); background: var(--chip-bg); color: var(--text-main); cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); text-transform: uppercase; transition: transform 0.1s, box-shadow 0.1s; }
-  .chip:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-main); }
-  .chip.active { background: var(--chip-active-bg); border-color: var(--chip-active-bg); color: var(--chip-active-text); }
+  /* --- BOUTONS CLAVIERS MECANIQUES (Temps) --- */
+  .chip-row { display: flex; flex-wrap: wrap; gap: 12px; padding-bottom: 10px;}
+  .chip { 
+    font-size: 14px; font-weight: 700; padding: 8px 14px; 
+    border: 2px solid var(--border-main); 
+    background: var(--chip-bg); color: var(--text-muted); /* Plus fade par défaut */
+    cursor: pointer; text-transform: uppercase; 
+    box-shadow: 4px 4px 0px var(--border-main); /* Bien en hauteur */
+    transform: translate(0, -4px); /* Remonté physiquement */
+    opacity: 0.65; /* Effet grisé / inactif */
+    transition: all 0.1s ease; 
+  }
+  
+  /* Touche enfoncée quand on clique */
+  .chip:active { 
+    transform: translate(4px, 0px); 
+    box-shadow: 0px 0px 0px var(--border-main); 
+  }
+  
+  /* Touche enclenchée (sélectionnée) */
+  .chip.active { 
+    background: var(--chip-active-bg); border-color: var(--border-main); 
+    color: var(--chip-active-text); 
+    box-shadow: 0px 0px 0px var(--border-main); /* Totalement enfoncé */
+    transform: translate(4px, 0px); /* Reste en position basse */
+    opacity: 1; /* Couleurs vibrantes */
+  }
   
   .btn { font-family: var(--font-main); font-size: 18px; font-weight: 900; text-transform: uppercase; padding: 14px 20px; background: var(--sheet-bg); color: var(--text-main); border: 4px solid var(--border-main); cursor: pointer; width: 100%; margin-top: 20px; box-shadow: 6px 6px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s; }
   .btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0px var(--border-main); }
@@ -118,7 +167,7 @@
   #answer-input:focus { outline: none; border-bottom-color: var(--input-focus); background: var(--ru-bg); }
   
   .accent-bar { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .accent-btn { font-family: var(--font-main); font-weight: 800; background: var(--chip-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 16px; padding: 6px 14px; cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s;}
+  .accent-btn { font-family: var(--font-main); font-weight: 800; background: var(--sheet-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 16px; padding: 6px 14px; cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s;}
   .accent-btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-main); }
 
   .feedback-zone { min-height: 90px; margin: 20px 0; }
@@ -149,11 +198,10 @@
     50% { color: #06b6d4; } 67% { color: #10b981; } 83% { color: #f59e0b; } 100% { color: #ef4444; }
   }
   
-  /* Confettis */
   .confetti { position: absolute; width: 12px; height: 12px; opacity: 0.9; animation: fall 3s linear infinite; z-index: 1; pointer-events: none; }
   @keyframes fall { to { transform: translateY(100vh) rotate(720deg); } }
 
-  /* --- EASTER EGG (Coeur et Pop-up) --- */
+  /* --- EASTER EGG --- */
   #secret-heart { 
     position: absolute; 
     bottom: 20px; 
@@ -174,28 +222,29 @@
   #love-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: var(--sheet-bg); color: #ff1493; border: 6px solid #ff1493; box-shadow: 8px 8px 0px var(--border-main); padding: 20px 30px; font-size: 28px; font-weight: 900; text-align: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   #love-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 
-  /* ==============================================================
-     ADAPTATION POUR LES GRANDS ECRANS (PC / TABLETTES)
-     Le navigateur lira ces règles uniquement si l'écran est large
-     ============================================================== */
+  /* --- ADAPTATION ECRANS PC --- */
   @media (min-width: 768px) {
-    body { align-items: center; /* Centre la carte verticalement sur PC */ padding: 40px; }
-    #sheet { max-width: 650px; margin-top: 0; margin-bottom: 0; padding: 10px; }
+    body { align-items: center; padding: 40px; }
+    #sheet { max-width: 800px; padding: 20px 40px; margin-top: 20px; margin-bottom: 20px;} 
     #content { padding: 40px; }
-    h1 { font-size: 36px; }
-    .subtitle { font-size: 18px; }
-    .infinitive { font-size: 32px; }
-    .sentence-row { font-size: 26px; }
-    #answer-input { font-size: 28px; width: 180px; }
+    h1 { font-size: 44px; }
+    .subtitle { font-size: 22px; }
+    .infinitive { font-size: 40px; }
+    .tense-tag { font-size: 20px; }
+    .sentence-row { font-size: 30px; }
+    #answer-input { font-size: 34px; width: 220px; }
     .chip { font-size: 16px; padding: 10px 18px; }
-    .btn { font-size: 22px; padding: 16px 24px; transition: all 0.15s ease; }
-    .btn:hover { background-color: var(--chip-bg); } /* Effet de survol sur PC */
-    .ru-line { font-size: 18px; }
-    .error-list { font-size: 20px; }
+    .btn { font-size: 26px; padding: 18px 28px; transition: all 0.15s ease; }
+    .btn:hover { filter: brightness(0.95); }
+    .ru-line { font-size: 20px; }
+    .error-list { font-size: 24px; }
   }
 </style>
 </head>
 <body>
+
+<!-- CANVA CACHÉ POUR LE TRAIL DE SOURIS SUR PC -->
+<canvas id="trail-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9998;"></canvas>
 
 <!-- MENU SANDWICH -->
 <div class="top-buttons">
@@ -207,18 +256,171 @@
   </div>
 </div>
 
-<!-- L'Easter Egg Cliquable -->
 <div id="secret-heart" aria-hidden="true">&hearts;</div>
 <div id="love-popup">MOI AUSSI JE T'AIME ! &hearts;</div>
 
 <div id="sheet"><div id="content"></div></div>
 
 <script>
+/* --- TRAIL DE SOURIS (EXCLUSIF PC) --- */
+const canvas = document.getElementById('trail-canvas');
+const ctx = canvas.getContext('2d');
+let particles = [];
+
+function resizeCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+const isDesktop = window.matchMedia("(min-width: 768px) and (pointer: fine)").matches;
+
+if (isDesktop) {
+  document.addEventListener('mousemove', (e) => {
+    const color = getComputedStyle(document.body).getPropertyValue('--chip-active-bg').trim();
+    particles.push({
+      x: e.clientX,
+      y: e.clientY,
+      size: Math.random() * 8 + 4, 
+      color: color,
+      alpha: 1
+    });
+  });
+
+  function animateTrail() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    for (let i = 0; i < particles.length; i++) {
+      let p = particles[i];
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.fillRect(p.x, p.y, p.size, p.size); 
+      p.alpha -= 0.05; 
+      p.size -= 0.15;  
+      p.y += 0.8;      
+    }
+    particles = particles.filter(p => p.alpha > 0 && p.size > 0);
+    requestAnimationFrame(animateTrail);
+  }
+  animateTrail();
+}
+
+/* --- AUDIO SFX --- */
+let audioCtx;
+function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
+
+function playSound(type) {
+  initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
+  osc.connect(gainNode); gainNode.connect(audioCtx.destination);
+  
+  const sfxVolume = 0.02; 
+  
+  if (type === 'correct') {
+    osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+  } else if (type === 'incorrect') {
+    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
+  } else if (type === 'click_in') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(800, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(1200, audioCtx.currentTime + 0.05);
+    gainNode.gain.setValueAtTime(sfxVolume * 0.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.05);
+  } else if (type === 'click_out') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(400, audioCtx.currentTime + 0.05);
+    gainNode.gain.setValueAtTime(sfxVolume * 0.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.05);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.05);
+  } else if (type === 'plop') {
+    osc.type = 'sine'; osc.frequency.setValueAtTime(600, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(300, audioCtx.currentTime + 0.1);
+    gainNode.gain.setValueAtTime(sfxVolume * 1.5, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.1);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.1);
+  } else if (type === 'sakura') {
+    osc.type = 'sine'; gainNode.gain.setValueAtTime(sfxVolume * 1.5, audioCtx.currentTime);
+    [523.25, 587.33, 659.25, 783.99, 880].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.08); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
+  } else if (type === 'dark') {
+    osc.type = 'sine'; gainNode.gain.setValueAtTime(sfxVolume * 1.5, audioCtx.currentTime);
+    [196.00, 293.66, 440.00, 587.33].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
+  } else if (type === 'start') {
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [440, 554, 659, 880].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.08); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.35);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.35);
+  } else if (type === 'victory') {
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
+  } else if (type === 'small_victory') {
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
+  } else if (type === 'defeat') {
+    osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
+  } else if (type === 'very_sad') {
+    osc.type = 'triangle'; osc.frequency.setValueAtTime(200, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
+    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+  } else if (type === 'perfect') {
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51, 1567.98];
+    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
+    const bufferSize = audioCtx.sampleRate * 2; const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0); for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
+    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
+    const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 800;
+    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(sfxVolume * 0.6, audioCtx.currentTime);
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
+    noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
+    noise.start(audioCtx.currentTime);
+  } else if (type === 'love') {
+    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
+    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
+    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); });
+    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
+    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.7);
+  } else if (type === 'quit') {
+    // --- NOUVEAU : Effet de Vent / Aspiration (Whoosh) ---
+    const bufferSize = audioCtx.sampleRate * 1.2;
+    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; } // Génération du souffle
+    
+    const noise = audioCtx.createBufferSource();
+    noise.buffer = buffer;
+    
+    const noiseFilter = audioCtx.createBiquadFilter();
+    noiseFilter.type = 'lowpass';
+    noiseFilter.Q.value = 2; // Ajoute un léger sifflement au vent
+    noiseFilter.frequency.setValueAtTime(2500, audioCtx.currentTime); // Commence aigu
+    noiseFilter.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 1.2); // Finit très grave, étouffé
+    
+    const noiseGain = audioCtx.createGain();
+    noiseGain.gain.setValueAtTime(0, audioCtx.currentTime);
+    noiseGain.gain.linearRampToValueAtTime(sfxVolume * 1.5, audioCtx.currentTime + 0.1); // Apparition rapide
+    noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.2); // Disparition en fondu
+    
+    noise.connect(noiseFilter);
+    noiseFilter.connect(noiseGain);
+    noiseGain.connect(audioCtx.destination);
+    
+    noise.start(audioCtx.currentTime);
+  }
+}
+
 /* --- MENU SANDWICH LOGIC --- */
 const hamburgerBtn = document.getElementById("hamburger-btn");
 const dropdownMenu = document.getElementById("dropdown-menu");
 
 hamburgerBtn.addEventListener("click", (e) => {
+  playSound('plop'); // Son du menu
   dropdownMenu.classList.toggle("show");
   e.stopPropagation(); 
 });
@@ -257,12 +459,14 @@ themeToggleBtn.addEventListener("click", () => {
   currentTheme = currentTheme === "dark" ? "light" : "dark";
   localStorage.setItem("theme", currentTheme);
   applyTheme();
+  if (currentTheme === "dark") playSound('dark'); // Son grave d'activation
 });
 
 sakuraToggleBtn.addEventListener("click", () => {
   currentTheme = currentTheme === "sakura" ? "light" : "sakura";
   localStorage.setItem("theme", currentTheme);
   applyTheme();
+  if (currentTheme === "sakura") playSound('sakura'); // Son mignon d'activation
 });
 
 /* --- MUSIC --- */
@@ -275,72 +479,6 @@ bgmToggleBtn.addEventListener("click", () => {
   else { bgMusic.play().catch(e => console.log("music.mp3 introuvable")); bgmToggleBtn.textContent = "🎵 ON"; }
   isMusicPlaying = !isMusicPlaying;
 });
-
-/* --- AUDIO SFX --- */
-let audioCtx;
-function initAudio() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); if (audioCtx.state === 'suspended') audioCtx.resume(); }
-
-function playSound(type) {
-  initAudio(); const osc = audioCtx.createOscillator(); const gainNode = audioCtx.createGain();
-  osc.connect(gainNode); gainNode.connect(audioCtx.destination);
-  
-  const sfxVolume = 0.02; 
-  
-  if (type === 'correct') {
-    osc.type = 'square'; osc.frequency.setValueAtTime(440, audioCtx.currentTime); osc.frequency.setValueAtTime(880, audioCtx.currentTime + 0.08); 
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
-  } else if (type === 'incorrect') {
-    osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, audioCtx.currentTime); osc.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + 0.3);
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime); gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.3);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.3);
-  } else if (type === 'victory') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [523.25, 659.25, 783.99, 1046.50].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.8);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.8);
-  } else if (type === 'small_victory') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [440, 554.37, 659.25].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.15); });
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.6);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.6);
-  } else if (type === 'defeat') {
-    osc.type = 'sawtooth'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    [329.63, 293.66, 261.63, 196.00].forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.2); });
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.0);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.0);
-  } else if (type === 'very_sad') {
-    osc.type = 'triangle'; 
-    osc.frequency.setValueAtTime(200, audioCtx.currentTime);
-    osc.frequency.exponentialRampToValueAtTime(50, audioCtx.currentTime + 1.5);
-    gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
-  } else if (type === 'perfect') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    const notes = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50, 1318.51, 1567.98];
-    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.12); });
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 1.5);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 1.5);
-    
-    const bufferSize = audioCtx.sampleRate * 2;
-    const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
-    const data = buffer.getChannelData(0);
-    for (let i = 0; i < bufferSize; i++) { data[i] = Math.random() * 2 - 1; }
-    const noise = audioCtx.createBufferSource(); noise.buffer = buffer;
-    const noiseFilter = audioCtx.createBiquadFilter(); noiseFilter.type = 'lowpass'; noiseFilter.frequency.value = 800;
-    const noiseGain = audioCtx.createGain(); noiseGain.gain.setValueAtTime(sfxVolume * 0.6, audioCtx.currentTime);
-    noiseGain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 2);
-    noise.connect(noiseFilter); noiseFilter.connect(noiseGain); noiseGain.connect(audioCtx.destination);
-    noise.start(audioCtx.currentTime);
-  } else if (type === 'love') {
-    osc.type = 'square'; gainNode.gain.setValueAtTime(sfxVolume, audioCtx.currentTime);
-    const notes = [523.25, 659.25, 783.99, 1046.50, 1318.51];
-    notes.forEach((freq, i) => { osc.frequency.setValueAtTime(freq, audioCtx.currentTime + i * 0.1); });
-    gainNode.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.7);
-    osc.start(audioCtx.currentTime); osc.stop(audioCtx.currentTime + 0.7);
-  }
-}
 
 /* --- LOGIQUE DE L'EASTER EGG --- */
 const secretHeart = document.getElementById("secret-heart");
@@ -548,6 +686,7 @@ const VERBS = [
     ctx: { present: ["rapidement.", "быстро."], imparfait: ["lentement.", "медленно."], futur: ["en taille.", "в размере."], passeCompose: ["cette année.", "в этом году."], plusQueParfait: ["de moitié.", "наполовину."], conditionnel: ["plus vite.", "быстрее."] } }
 ];
 
+
 const PRONOUNS = ["je", "tu", "il / elle / on", "nous", "vous", "ils / elles"];
 const RU_PRONOUNS = ["Я", "Ты", "Он / Она / Мы (on)", "Мы", "Вы", "Они"];
 const IMPARFAIT_END = ["ais", "ais", "ait", "ions", "iez", "aient"];
@@ -555,7 +694,7 @@ const FUTUR_END = ["ai", "as", "a", "ons", "ez", "ont"];
 const AUX_PRES = { avoir: ["ai", "as", "a", "avons", "avez", "ont"], etre: ["suis", "es", "est", "sommes", "êtes", "sont"] };
 const AUX_IMP = { avoir: ["avais", "avais", "avait", "avions", "aviez", "avaient"], etre: ["étais", "étais", "était", "étions", "étiez", "étaient"] };
 
-const TENSE_LABELS = { present: "présent", imparfait: "imparfait", futur: "futur simple", passeCompose: "passé composé", plusQueParfait: "plus-que-parfait", conditionnel: "conditionnel prés." };
+const TENSE_LABELS = { present: "présent", imparfait: "imparfait", futur: "futur simple", passeCompose: "passé composé", plusQueParfait: "plus-que-parfait", conditionnel: "conditionnel présent" };
 const TENSE_ORDER = ["present", "imparfait", "futur", "passeCompose", "plusQueParfait", "conditionnel"];
 
 function imparfaitStem(v) { return v.inf === "être" ? "ét" : v.pres[3].replace(/ons$/, ""); }
@@ -607,14 +746,20 @@ let state = {
 
 const content = document.getElementById("content");
 
-function toggleTense(t) { const next = { ...state.activeTenses, [t]: !state.activeTenses[t] }; if (!Object.values(next).some(Boolean)) return; state.activeTenses = next; render(); }
+function toggleTense(t) { 
+  const next = { ...state.activeTenses, [t]: !state.activeTenses[t] }; 
+  if (!Object.values(next).some(Boolean)) return; 
+  state.activeTenses = next; 
+  playSound(state.activeTenses[t] ? 'click_in' : 'click_out');
+  render(); 
+}
 
 function render() {
   if (!state.started) {
-    content.innerHTML = `<div style="padding-top:10px;padding-bottom:10px;"><h1>Conjugaison 3e gr.</h1><p class="subtitle">► Session de 20 verbes</p><div class="section-label">SELECT. TEMPS</div><div class="chip-row" id="tense-chips">${TENSE_ORDER.map(t => `<button class="chip ${state.activeTenses[t] ? "active" : ""}" data-tense="${t}">${TENSE_LABELS[t]}</button>`).join("")}</div><div style="margin-top:28px;"><button class="btn" id="start-btn">► START SESSION ◄</button></div></div>`;
+    content.innerHTML = `<div style="padding-top:10px;padding-bottom:10px;"><h1>Conjugaison 3e groupe</h1><p class="subtitle">// Session de 20 verbes</p><div class="section-label">Temps sélectionnés</div><div class="chip-row" id="tense-chips">${TENSE_ORDER.map(t => `<button class="chip ${state.activeTenses[t] ? "active" : ""}" data-tense="${t}">${TENSE_LABELS[t]}</button>`).join("")}</div><div style="margin-top:28px;"><button class="btn" id="start-btn">[ START ]</button></div></div>`;
     document.querySelectorAll(".chip").forEach(btn => btn.addEventListener("click", () => toggleTense(btn.dataset.tense)));
     document.getElementById("start-btn").addEventListener("click", () => { 
-      initAudio(); 
+      playSound('start');
       state.questionCount = 0; 
       state.sessionScore = 0; 
       state.sessionErrors = []; 
@@ -673,7 +818,7 @@ function render() {
 
   const accentBar = state.feedback === null ? `<div class="accent-bar">${['é','è','ê','à','ç','î','ô'].map(char => `<button class="accent-btn" tabindex="-1" onclick="insertAccent('${char}')">${char}</button>`).join("")}</div>` : "";
   
-  const btnLabel = state.feedback === null ? "VALIDATE" : (state.questionCount >= 19 ? "VOIR LE SCORE >" : "NEXT LEVEL >");
+ const btnLabel = state.feedback === null ? "[ VALIDATE ]" : (state.questionCount >= 19 ? "[ VOIR LE SCORE ]" : "[ NEXT LEVEL ]");
 
   content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:14px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static; margin:0;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
 
