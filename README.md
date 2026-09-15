@@ -8,16 +8,26 @@
 <title>Conjugaison</title>
 <style>
   :root {
-    --bg-color: #9fb8ad; --sheet-bg: #e0e6ed; --border-main: #1a1a1a;
-    --text-main: #1a1a1a; --text-muted: #525252; --chip-bg: #c5d1db;
-    --chip-active-bg: #1a1a1a; --chip-active-text: #e0e6ed;
-    --input-focus: #f72585; --correct-color: #008a00; --incorrect-color: #d90429;
-    --ru-bg: rgba(0, 0, 0, 0.08);
+    /* NOUVEAU THEME PAR DEFAUT : Bleu Nuit / Clair & Esthétique */
+    --bg-color: #e2e8f0;       /* Fond général gris-bleu très clair */
+    --sheet-bg: #ffffff;       /* Fond de la carte blanc pur */
+    --border-main: #0f172a;    /* Bleu nuit très profond (presque noir) */
+    --text-main: #1e293b;      /* Bleu nuit légèrement adouci pour la lecture */
+    --text-muted: #64748b;     /* Gris-bleu pour les textes secondaires */
+    --chip-bg: #f1f5f9;        /* Fond des boutons inactifs */
+    --chip-active-bg: #2563eb; /* Bleu vif pour les éléments actifs */
+    --chip-active-text: #ffffff;
+    --input-focus: #2563eb;    /* Curseur et input bleu vif */
+    --correct-color: #10b981;  /* Vert émeraude moderne */
+    --incorrect-color: #ef4444;/* Rouge vif moderne */
+    --ru-bg: rgba(37, 99, 235, 0.08); /* Fond bleuté léger pour le russe */
+    
     /* Polices modernes et ultra-lisibles */
     --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
     --font-ru: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   }
   
+  /* --- THEME SOMBRE (Cyberpunk) --- */
   body.dark-mode {
     --bg-color: #121212; --sheet-bg: #1a1a1a; --border-main: #00ffcc;
     --text-main: #f0f0f0; --text-muted: #8c8c8c; --chip-bg: #2a2a2a;
@@ -28,112 +38,115 @@
 
   /* --- THEME SAKURA --- */
   body.sakura-mode {
-    --bg-color: #ffd1dc !important; 
-    --sheet-bg: #fff0f5 !important; 
-    --border-main: #b03060 !important;
-    --text-main: #4a3636 !important; 
-    --text-muted: #8b4c5e !important; 
-    --chip-bg: #ffb7c5 !important;
-    --chip-active-bg: #b03060 !important; 
-    --chip-active-text: #fff !important;
-    --input-focus: #ff1493 !important; 
-    --correct-color: #2e8b57 !important; 
-    --incorrect-color: #dc143c !important;
-    --ru-bg: rgba(255, 183, 197, 0.5) !important;
+    --bg-color: #ffd1dc !important; --sheet-bg: #fff0f5 !important; 
+    --border-main: #b03060 !important; --text-main: #4a3636 !important; 
+    --text-muted: #8b4c5e !important; --chip-bg: #ffb7c5 !important;
+    --chip-active-bg: #b03060 !important; --chip-active-text: #fff !important;
+    --input-focus: #ff1493 !important; --correct-color: #2e8b57 !important; 
+    --incorrect-color: #dc143c !important; --ru-bg: rgba(255, 183, 197, 0.5) !important;
   }
 
-  * { box-sizing: border-box; border-radius: 0 !important; }
-  html, body { margin: 0; padding: 0; min-height: 100%; background: var(--bg-color); font-family: var(--font-main); transition: background-color 0.3s ease; color: var(--text-main); }
+  * { box-sizing: border-box; border-radius: 0 !important; } /* Garde l'aspect blocky */
+  
+  html, body { 
+    margin: 0; padding: 0; min-height: 100vh; 
+    background: var(--bg-color); font-family: var(--font-main); 
+    transition: background-color 0.3s ease; color: var(--text-main); 
+  }
   
   body { 
     display: flex; 
     justify-content: center; 
+    align-items: flex-start; /* Permet un bon scroll sur mobile */
     padding: 16px 8px; 
-    position: relative; 
+    position: relative; /* Pour que l'easter egg se positionne bien au fond */
   }
   
-  /* --- MENU SANDWICH --- */
-  .top-buttons { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; z-index: 100; }
-  .nav-btn { background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; font-family: var(--font-main); box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; white-space: nowrap;}
+  /* --- MENU SANDWICH (FIXE POUR RESTER VISIBLE) --- */
+  .top-buttons { 
+    position: fixed; /* Reste à l'écran même en scrollant */
+    top: 16px; right: 16px; 
+    display: flex; flex-direction: column; align-items: flex-end; gap: 8px; z-index: 100; 
+  }
+  .nav-btn { 
+    background: var(--sheet-bg); border: 3px solid var(--border-main); color: var(--text-main); 
+    font-size: 15px; font-weight: 700; cursor: pointer; padding: 8px 12px; font-family: var(--font-main); 
+    box-shadow: 4px 4px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s; white-space: nowrap;
+  }
   .nav-btn:active { transform: translate(4px, 4px); box-shadow: 0px 0px 0px var(--border-main); }
   
   #hamburger-btn { font-size: 18px; }
   
   #dropdown-menu {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    opacity: 0;
-    visibility: hidden;
-    transform: translateY(-10px);
-    transition: all 0.2s ease;
-    pointer-events: none;
-    align-items: flex-end;
+    display: flex; flex-direction: column; gap: 8px; opacity: 0; visibility: hidden;
+    transform: translateY(-10px); transition: all 0.2s ease; pointer-events: none; align-items: flex-end;
   }
-  #dropdown-menu.show {
-    opacity: 1;
-    visibility: visible;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
+  #dropdown-menu.show { opacity: 1; visibility: visible; transform: translateY(0); pointer-events: auto; }
 
-  #sheet { position: relative; width: 100%; max-width: 480px; background: var(--sheet-bg); border: 4px solid var(--border-main); box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; margin-top: 50px; z-index: 2;}
+  /* --- STRUCTURE PRINCIPALE --- */
+  #sheet { 
+    position: relative; width: 100%; max-width: 480px; 
+    background: var(--sheet-bg); border: 4px solid var(--border-main); 
+    box-shadow: 8px 8px 0px var(--border-main); overflow: hidden; 
+    margin-top: 50px; margin-bottom: 60px; z-index: 2;
+  }
   #content { padding: 24px; }
-  h1 { font-weight: 800; font-size: 28px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -0.5px; }
+  
+  h1 { font-weight: 900; font-size: 28px; margin: 0 0 10px 0; text-transform: uppercase; letter-spacing: -0.5px; }
   .subtitle { font-size: 16px; color: var(--text-muted); margin: 0 0 20px; line-height: 1.4; font-weight: 500; }
-  .section-label { font-size: 14px; font-weight: 700; text-transform: uppercase; margin: 24px 0 12px; border-bottom: 2px dashed var(--text-muted); display: inline-block; letter-spacing: 0.5px; }
+  .section-label { font-size: 14px; font-weight: 800; text-transform: uppercase; margin: 24px 0 12px; border-bottom: 2px dashed var(--text-muted); display: inline-block; letter-spacing: 0.5px; }
   
   .chip-row { display: flex; flex-wrap: wrap; gap: 10px; }
-  .chip { font-size: 14px; font-weight: 600; padding: 8px 14px; border: 2px solid var(--border-main); background: var(--chip-bg); color: var(--text-main); cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); text-transform: uppercase; }
+  .chip { font-size: 14px; font-weight: 700; padding: 8px 14px; border: 2px solid var(--border-main); background: var(--chip-bg); color: var(--text-main); cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); text-transform: uppercase; transition: transform 0.1s, box-shadow 0.1s; }
   .chip:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-main); }
   .chip.active { background: var(--chip-active-bg); border-color: var(--chip-active-bg); color: var(--chip-active-text); }
   
-  .btn { font-family: var(--font-main); font-size: 18px; font-weight: 800; text-transform: uppercase; padding: 14px 20px; background: var(--sheet-bg); color: var(--text-main); border: 4px solid var(--border-main); cursor: pointer; width: 100%; margin-top: 20px; box-shadow: 6px 6px 0px var(--border-main); }
+  .btn { font-family: var(--font-main); font-size: 18px; font-weight: 900; text-transform: uppercase; padding: 14px 20px; background: var(--sheet-bg); color: var(--text-main); border: 4px solid var(--border-main); cursor: pointer; width: 100%; margin-top: 20px; box-shadow: 6px 6px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s, background-color 0.2s; }
   .btn:active { transform: translate(6px, 6px); box-shadow: 0px 0px 0px var(--border-main); }
   
-  .score-row { font-size: 16px; font-weight: 600; display: flex; justify-content: space-between; align-items: flex-end; }
+  .score-row { font-size: 16px; font-weight: 700; display: flex; justify-content: space-between; align-items: flex-end; }
   .stats { display: flex; flex-direction: column; line-height: 1.3; }
   .hr { border: none; border-top: 4px dotted var(--border-main); margin: 16px 0; }
   
   .prompt-header { margin-bottom: 16px; }
-  .infinitive { font-size: 26px; font-weight: 800; text-transform: uppercase; }
-  .tense-tag { font-size: 16px; font-weight: 600; color: var(--text-muted); }
+  .infinitive { font-size: 26px; font-weight: 900; text-transform: uppercase; }
+  .tense-tag { font-size: 16px; font-weight: 700; color: var(--text-muted); }
   
-  .sentence-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; font-size: 20px; font-weight: 500; line-height: 1.6; margin-bottom: 12px; }
-  #answer-input { font-family: var(--font-main); font-size: 22px; font-weight: 700; color: var(--input-focus); background: transparent; border: none; border-bottom: 4px solid var(--border-main); padding: 4px 8px; width: 150px; text-align: center; }
+  .sentence-row { display: flex; align-items: baseline; flex-wrap: wrap; gap: 10px; font-size: 22px; font-weight: 600; line-height: 1.6; margin-bottom: 12px; }
+  #answer-input { font-family: var(--font-main); font-size: 24px; font-weight: 800; color: var(--input-focus); background: transparent; border: none; border-bottom: 4px solid var(--border-main); padding: 4px 8px; width: 150px; text-align: center; }
   #answer-input::placeholder { color: var(--text-muted); font-size: 18px; font-weight: 500; }
   #answer-input:focus { outline: none; border-bottom-color: var(--input-focus); background: var(--ru-bg); }
   
   .accent-bar { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
-  .accent-btn { font-family: var(--font-main); font-weight: 700; background: var(--chip-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 16px; padding: 6px 12px; cursor: pointer; box-shadow: 2px 2px 0px var(--border-main); }
-  .accent-btn:active { transform: translate(2px, 2px); box-shadow: 0px 0px 0px var(--border-main); }
+  .accent-btn { font-family: var(--font-main); font-weight: 800; background: var(--chip-bg); border: 2px solid var(--border-main); color: var(--text-main); font-size: 16px; padding: 6px 14px; cursor: pointer; box-shadow: 3px 3px 0px var(--border-main); transition: transform 0.1s, box-shadow 0.1s;}
+  .accent-btn:active { transform: translate(3px, 3px); box-shadow: 0px 0px 0px var(--border-main); }
 
   .feedback-zone { min-height: 90px; margin: 20px 0; }
-  .correct-mark { font-size: 18px; font-weight: 700; color: var(--correct-color); margin-bottom: 8px; animation: blink 0.5s ease-in-out; }
-  .incorrect-mark { font-size: 18px; font-weight: 700; color: var(--incorrect-color); margin-bottom: 8px; }
+  .correct-mark { font-size: 18px; font-weight: 800; color: var(--correct-color); margin-bottom: 8px; animation: blink 0.5s ease-in-out; }
+  .incorrect-mark { font-size: 18px; font-weight: 800; color: var(--incorrect-color); margin-bottom: 8px; }
   
   .ru-line { font-family: var(--font-ru); font-size: 15px; color: var(--text-muted); margin-top: 12px; padding: 12px; background: var(--ru-bg); border: 2px dashed var(--border-main); line-height: 1.5; }
-  .ru-line strong { color: var(--text-main); background: var(--sheet-bg); padding: 2px 6px; font-weight: 700; }
+  .ru-line strong { color: var(--text-main); background: var(--sheet-bg); padding: 2px 6px; font-weight: 800; }
   
   @keyframes blink { 0% { opacity: 0; } 50% { opacity: 1; } 100% { opacity: 0; } }
 
   /* --- STYLES ECRAN DE FIN --- */
   .result-container { text-align: center; padding: 20px; z-index: 2; position: relative; }
-  .result-score { font-size: 72px; margin-bottom: 10px; font-weight: 900; -webkit-text-stroke: 2px var(--border-main); letter-spacing: -2px; }
+  .result-score { font-size: 80px; margin-bottom: 10px; font-weight: 900; -webkit-text-stroke: 2px var(--border-main); letter-spacing: -2px; }
   .result-rgb { animation: rainbow 2s linear infinite, pulse 0.5s infinite alternate; text-shadow: 0 0 15px currentColor; }
   .result-golden { color: #ffd700; text-shadow: 0 0 10px #ffd700, 0 0 20px #ff8c00; animation: pulse 1s infinite alternate; }
-  .result-green { color: #39ff14; text-shadow: 0 0 10px #39ff14; }
-  .result-orange { color: #ff8c00; }
-  .result-red { color: #d90429; text-shadow: 0 0 10px #d90429; }
+  .result-green { color: #10b981; text-shadow: 0 0 10px #10b981; }
+  .result-orange { color: #f59e0b; text-shadow: 0 0 10px #f59e0b; }
+  .result-red { color: #ef4444; text-shadow: 0 0 10px #ef4444; }
   
-  .error-list { margin-top: 20px; font-size: 16px; font-weight: 600; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
+  .error-list { margin-top: 20px; font-size: 16px; font-weight: 700; text-align: left; background: var(--ru-bg); padding: 15px; border: 2px dashed var(--border-main); }
   .error-list ul { margin: 10px 0 0 0; padding-left: 20px; }
-  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; font-weight: 700; }
+  .error-list li { margin-bottom: 5px; color: var(--incorrect-color); text-transform: uppercase; font-weight: 800; }
   
   @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.05); } }
   @keyframes rainbow {
-    0% { color: #ff0000; } 17% { color: #ff00ff; } 33% { color: #0000ff; }
-    50% { color: #00ffff; } 67% { color: #00ff00; } 83% { color: #ffff00; } 100% { color: #ff0000; }
+    0% { color: #ef4444; } 17% { color: #d946ef; } 33% { color: #3b82f6; }
+    50% { color: #06b6d4; } 67% { color: #10b981; } 83% { color: #f59e0b; } 100% { color: #ef4444; }
   }
   
   /* Confettis */
@@ -158,8 +171,28 @@
   }
   #secret-heart:active { transform: scale(0.8) translate(4px, 4px); text-shadow: 0px 0px 0px var(--border-main); }
 
-  #love-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: var(--sheet-bg); color: #ff1493; border: 6px solid #ff1493; box-shadow: 8px 8px 0px var(--border-main); padding: 20px 30px; font-size: 28px; font-weight: 800; text-align: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+  #love-popup { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0.5); background: var(--sheet-bg); color: #ff1493; border: 6px solid #ff1493; box-shadow: 8px 8px 0px var(--border-main); padding: 20px 30px; font-size: 28px; font-weight: 900; text-align: center; z-index: 9999; opacity: 0; pointer-events: none; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
   #love-popup.show { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+
+  /* ==============================================================
+     ADAPTATION POUR LES GRANDS ECRANS (PC / TABLETTES)
+     Le navigateur lira ces règles uniquement si l'écran est large
+     ============================================================== */
+  @media (min-width: 768px) {
+    body { align-items: center; /* Centre la carte verticalement sur PC */ padding: 40px; }
+    #sheet { max-width: 650px; margin-top: 0; margin-bottom: 0; padding: 10px; }
+    #content { padding: 40px; }
+    h1 { font-size: 36px; }
+    .subtitle { font-size: 18px; }
+    .infinitive { font-size: 32px; }
+    .sentence-row { font-size: 26px; }
+    #answer-input { font-size: 28px; width: 180px; }
+    .chip { font-size: 16px; padding: 10px 18px; }
+    .btn { font-size: 22px; padding: 16px 24px; transition: all 0.15s ease; }
+    .btn:hover { background-color: var(--chip-bg); } /* Effet de survol sur PC */
+    .ru-line { font-size: 18px; }
+    .error-list { font-size: 20px; }
+  }
 </style>
 </head>
 <body>
@@ -642,7 +675,7 @@ function render() {
   
   const btnLabel = state.feedback === null ? "VALIDATE" : (state.questionCount >= 19 ? "VOIR LE SCORE >" : "NEXT LEVEL >");
 
-  content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:14px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
+  content.innerHTML = `<div class="score-row"><div class="stats"><span>QUESTION: ${state.questionCount + 1}/20</span><span style="font-size:14px; color:var(--text-muted)">SCORE ACTUEL: ${state.sessionScore}</span></div><button class="nav-btn" id="menu-btn" style="position:static; margin:0;">QUIT</button></div><div class="hr"></div><div class="prompt-header"><span class="infinitive">${q.verb.inf}</span><span class="tense-tag"> // ${TENSE_LABELS[q.tense]}</span></div><div class="sentence-row"><span class="pronoun-label">${displayPronoun}</span><div style="display:flex; flex-direction:column;"><input type="text" id="answer-input" placeholder="___" autocapitalize="none" autocorrect="off" spellcheck="false" ${disabled} />${accentBar}</div><span class="context-label">${frenchContext}</span></div><div class="feedback-zone">${feedbackHtml}</div><button class="btn" id="action-btn">${btnLabel}</button>`;
 
   const input = document.getElementById("answer-input"); if (!disabled) input.focus();
   
