@@ -1,19 +1,19 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Configuration des niveaux
+// Configuration des niveaux avec le dossier "musics"
 const LEVELS = [
-    { name: "Berlin", bg: "backgrounds/BerlinBG.png", music: "audio/BerlinMusic.mp3" },
-    { name: "Cologne", bg: "backgrounds/CologneBG.png", music: "audio/CologneMusic.mp3" },
-    { name: "Brest", bg: "backgrounds/BrestBG.png", music: "audio/BrestMusic.mp3" },
-    { name: "Strasbourg", bg: "backgrounds/StrasbourgBG.png", music: "audio/StrasbourgMusic.mp3" }
+    { name: "Berlin", bg: "backgrounds/BerlinBG.png", music: "musics/BerlinMusic.mp3" },
+    { name: "Cologne", bg: "backgrounds/CologneBG.png", music: "musics/CologneMusic.mp3" },
+    { name: "Brest", bg: "backgrounds/BrestBG.png", music: "musics/BrestMusic.mp3" },
+    { name: "Strasbourg", bg: "backgrounds/StrasbourgBG.png", music: "musics/StrasbourgMusic.mp3" }
 ];
 
 let currentLevelIndex = 0;
 let currentBgImage = new Image();
-let currentAudio = new Audio();
+let currentAudio = null;
 
-// Assets du Personnage
+// Assets du Personnage (Axe East uniquement)
 const ASSETS = {
     idle: "character/rotations/east.png",
     running: Array.from({ length: 6 }, (_, i) => `character/animations/Running/east/frame_00${i}.png`),
@@ -26,23 +26,20 @@ const images = { running: [], jumping: [], idle: new Image() };
 function loadLevel(index) {
     const level = LEVELS[index];
     
-    // Changement de fond
     currentBgImage.src = level.bg;
 
-    // Changement de musique
     if (currentAudio) {
         currentAudio.pause();
     }
+    
     currentAudio = new Audio(level.music);
     currentAudio.loop = true;
     currentAudio.play().catch(() => {
-        console.log("Clique sur la page pour activer l'audio.");
+        console.log("Interaction requise pour lancer l'audio.");
     });
-
-    console.title = `Niveau actuel : ${level.name}`;
 }
 
-// Chargement initial des sprites
+// Chargement des images
 function loadAssets(callback) {
     let total = 1 + ASSETS.running.length + ASSETS.jumping.length;
     let loaded = 0;
@@ -68,7 +65,7 @@ function loadAssets(callback) {
 // Objet Personnage
 const character = {
     x: 100,
-    y: 800, // Ajusté pour le canvas de 1111px de haut
+    y: 800,
     state: "IDLE",
     currentFrame: 0,
     frameTimer: 0,
@@ -114,13 +111,17 @@ const character = {
     }
 };
 
-// Contrôles
+// Contrôles clavier
 const keys = {};
 
 window.addEventListener("keydown", (e) => {
     keys[e.key] = true;
 
-    // Saut
+    // Déblocage de l'audio lors du premier appui sur une touche
+    if (currentAudio && currentAudio.paused) {
+        currentAudio.play().catch(() => {});
+    }
+
     if ((e.key === " " || e.key === "ArrowUp") && character.isGrounded) {
         character.state = "JUMPING";
         character.isGrounded = false;
@@ -128,7 +129,6 @@ window.addEventListener("keydown", (e) => {
         character.currentFrame = 0;
     }
 
-    // Course vers l'Est
     if ((e.key === "ArrowRight" || e.key === "d") && character.isGrounded) {
         if (character.state !== "RUNNING") {
             character.state = "RUNNING";
@@ -136,7 +136,6 @@ window.addEventListener("keydown", (e) => {
         }
     }
 
-    // Touche 'N' pour passer au niveau suivant
     if (e.key === "n" || e.key === "N") {
         currentLevelIndex = (currentLevelIndex + 1) % LEVELS.length;
         loadLevel(currentLevelIndex);
@@ -151,23 +150,21 @@ window.addEventListener("keyup", (e) => {
     }
 });
 
-// Boucle du Jeu
+// Boucle principale
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // 1. Dessine le fond d'écran de la ville actuelle
     if (currentBgImage.complete && currentBgImage.src) {
         ctx.drawImage(currentBgImage, 0, 0, canvas.width, canvas.height);
     }
 
-    // 2. Met à jour et dessine le personnage
     character.update();
     character.draw();
 
     requestAnimationFrame(gameLoop);
 }
 
-// Initialisation
+// Démarrage
 loadAssets(() => {
     loadLevel(currentLevelIndex);
     gameLoop();
