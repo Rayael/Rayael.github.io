@@ -10,7 +10,7 @@
 
   <!-- Menu Principal -->
   <div id="main-menu">
-    <h1>Titre de l'Aventure</h1>
+    <h1>Un jour spécial</h1>
     <button id="start-btn">Commencer</button>
   </div>
 
