@@ -1,7 +1,10 @@
 const canvas = document.getElementById("gameCanvas");
 const ctx = canvas.getContext("2d");
 
-// Configuration des niveaux avec le dossier "musics"
+// Position du sol ajustée au bas de l'image (1111px - hauteur estimée du sprite ~128px)
+const GROUND_Y = 980;
+
+// Configuration des niveaux
 const LEVELS = [
     { name: "Berlin", bg: "backgrounds/BerlinBG.png", music: "musics/BerlinMusic.mp3" },
     { name: "Cologne", bg: "backgrounds/CologneBG.png", music: "musics/CologneMusic.mp3" },
@@ -22,7 +25,7 @@ const ASSETS = {
 
 const images = { running: [], jumping: [], idle: new Image() };
 
-// Chargement du niveau (Fond + Musique)
+// Chargement d'un niveau (Arrière-plan + Musique)
 function loadLevel(index) {
     const level = LEVELS[index];
     
@@ -35,11 +38,11 @@ function loadLevel(index) {
     currentAudio = new Audio(level.music);
     currentAudio.loop = true;
     currentAudio.play().catch(() => {
-        console.log("Interaction requise pour lancer l'audio.");
+        console.log("Interaction requise avec la page pour lancer la musique.");
     });
 }
 
-// Chargement des images
+// Préchargement de l'ensemble des sprites
 function loadAssets(callback) {
     let total = 1 + ASSETS.running.length + ASSETS.jumping.length;
     let loaded = 0;
@@ -62,11 +65,12 @@ function loadAssets(callback) {
     });
 }
 
-// Objet Personnage
+// Entité Personnage
 const character = {
-    x: 100,
-    y: 800,
-    state: "IDLE",
+    x: 50,
+    y: GROUND_Y,
+    speed: 5,
+    state: "IDLE", // IDLE, RUNNING, JUMPING
     currentFrame: 0,
     frameTimer: 0,
     frameSpeed: 6,
@@ -75,21 +79,34 @@ const character = {
     gravity: 0.8,
 
     update() {
+        // Déplacement horizontal lors de la course
+        if (keys["ArrowRight"] || keys["d"]) {
+            this.x += this.speed;
+            // Réapparition à gauche si sortie de l'écran par la droite
+            if (this.x > canvas.width) {
+                this.x = -60;
+            }
+        }
+
+        // Physique et trajectoire du saut
         if (this.state === "JUMPING") {
             this.y += this.velocityY;
             this.velocityY += this.gravity;
 
-            if (this.y >= 800) {
-                this.y = 800;
+            // Réception au sol
+            if (this.y >= GROUND_Y) {
+                this.y = GROUND_Y;
                 this.isGrounded = true;
-                this.state = keys["ArrowRight"] || keys["d"] ? "RUNNING" : "IDLE";
+                this.state = (keys["ArrowRight"] || keys["d"]) ? "RUNNING" : "IDLE";
                 this.currentFrame = 0;
             }
         }
 
+        // Animation des images (Frames)
         this.frameTimer++;
         if (this.frameTimer >= this.frameSpeed) {
             this.frameTimer = 0;
+
             if (this.state === "RUNNING") {
                 this.currentFrame = (this.currentFrame + 1) % images.running.length;
             } else if (this.state === "JUMPING") {
@@ -111,24 +128,26 @@ const character = {
     }
 };
 
-// Contrôles clavier
+// Gestion des entrées clavier
 const keys = {};
 
 window.addEventListener("keydown", (e) => {
     keys[e.key] = true;
 
-    // Déblocage de l'audio lors du premier appui sur une touche
+    // Déblocage du son après la première action joueur
     if (currentAudio && currentAudio.paused) {
         currentAudio.play().catch(() => {});
     }
 
+    // Commande Saut
     if ((e.key === " " || e.key === "ArrowUp") && character.isGrounded) {
         character.state = "JUMPING";
         character.isGrounded = false;
-        character.velocityY = -14;
+        character.velocityY = -15;
         character.currentFrame = 0;
     }
 
+    // Commande Course (Est)
     if ((e.key === "ArrowRight" || e.key === "d") && character.isGrounded) {
         if (character.state !== "RUNNING") {
             character.state = "RUNNING";
@@ -136,6 +155,7 @@ window.addEventListener("keydown", (e) => {
         }
     }
 
+    // Touche N : Changement manuel de niveau
     if (e.key === "n" || e.key === "N") {
         currentLevelIndex = (currentLevelIndex + 1) % LEVELS.length;
         loadLevel(currentLevelIndex);
@@ -144,27 +164,30 @@ window.addEventListener("keydown", (e) => {
 
 window.addEventListener("keyup", (e) => {
     keys[e.key] = false;
+
     if ((e.key === "ArrowRight" || e.key === "d") && character.state === "RUNNING") {
         character.state = "IDLE";
         character.currentFrame = 0;
     }
 });
 
-// Boucle principale
+// Boucle de rendu
 function gameLoop() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
+    // 1. Rendu du décor de fond
     if (currentBgImage.complete && currentBgImage.src) {
         ctx.drawImage(currentBgImage, 0, 0, canvas.width, canvas.height);
     }
 
+    // 2. Mise à jour et rendu du personnage
     character.update();
     character.draw();
 
     requestAnimationFrame(gameLoop);
 }
 
-// Démarrage
+// Initialisation au chargement des ressources
 loadAssets(() => {
     loadLevel(currentLevelIndex);
     gameLoop();
