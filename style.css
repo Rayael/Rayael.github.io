@@ -30,6 +30,8 @@ body, html {
   background: #000;
   color: #fff;
   font-family: 'Press Start 2P', monospace;
+  text-align: center;
+  padding: 20px;
   transition: opacity 1.5s ease;
 }
 
@@ -38,13 +40,13 @@ body, html {
   pointer-events: none;
 }
 
-/* Scène de jeu au ratio 16:9 fixe (1600x900) */
+/* Zone de jeu 16:9 */
 #game-stage {
   position: relative;
   width: 100vw;
-  height: 56.25vw; /* Ratio 16:9 */
+  height: 56.25vw;
   max-height: 100vh;
-  max-width: 177.78vh; /* Ratio 16:9 inverse */
+  max-width: 177.78vh;
   background: #000;
   overflow: hidden;
 }
@@ -54,90 +56,100 @@ body, html {
   position: absolute;
   inset: 0;
   background: url('assets/background.gif') no-repeat center center;
-  background-size: contain; /* Conserve le GIF 1600x900 entier sans couper */
+  background-size: cover;
   z-index: 1;
 }
 
-/* Style de base des bulles pixélisées */
-.speech-bubble {
-  position: absolute;
-  background: #ffffff;
-  border: 4px solid #000;
-  box-shadow: 4px 4px 0px #000;
-  padding: 15px;
-  z-index: 2;
-}
-
-/* Bulle Homme - Haut Gauche */
+/* Bulle Homme - Haut Gauche (Ajustée Mobile) */
 #man-bubble {
-  top: 5%;
-  left: 5%;
-  width: 45%;
-  max-width: 450px;
-  display: none; /* Masqué au départ */
+  position: absolute;
+  top: 4%;
+  left: 4%;
+  width: 60%;
+  max-width: 480px;
+  background: #ffffff;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  padding: 10px 14px;
+  z-index: 2;
+  display: none;
 }
 
-.man-theme #speaker-name {
+#dialog-text {
   font-family: 'VT323', monospace;
-  font-size: 20px;
-  color: #1a2a6c; /* Bleu sombre */
-  font-weight: bold;
-  margin-bottom: 5px;
+  font-size: 20px; /* Taille optimisée lisibilité */
+  color: #0b132b;
+  line-height: 1.25;
+  word-wrap: break-word;
 }
 
-.man-theme #dialog-text {
-  font-family: 'VT323', monospace;
-  font-size: 24px;
-  color: #0b132b; /* Bleu très sombre */
-  line-height: 1.2;
-  min-height: 50px;
-}
-
-/* Choix / Réponses Femme (Bas Droite) */
+/* Réponses / Actions Femme - Bas Droite */
 #choices-container {
   position: absolute;
-  bottom: 8%;
-  right: 5%;
-  width: 50%;
-  max-width: 480px;
+  bottom: 5%;
+  right: 4%;
+  width: 65%;
+  max-width: 450px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   z-index: 2;
 }
 
 .woman-choice-btn {
   background: #ffffff;
-  border: 4px solid #000;
-  box-shadow: 4px 4px 0px #000;
-  padding: 12px 15px;
+  border: 3px solid #000;
+  box-shadow: 3px 3px 0px #000;
+  padding: 8px 12px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 11px;
-  color: #4a154b; /* Violet foncé */
+  font-size: 9px; /* Taille réduite pour mobile */
+  color: #4a154b;
   text-align: left;
   cursor: pointer;
   line-height: 1.4;
 }
 
-.woman-choice-btn:hover {
+.woman-choice-btn:hover, .woman-choice-btn:active {
   background: #f3e5f5;
-  transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0px #000;
 }
 
-/* Bouton Suivant */
-#next-btn {
-  margin-top: 10px;
-  float: right;
-  background: #1a2a6c;
-  color: #fff;
-  border: none;
-  font-family: 'VT323', monospace;
-  font-size: 18px;
-  padding: 4px 10px;
-  cursor: pointer;
+/* Écran de fin */
+#end-screen {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 20px;
 }
 
-#next-btn:hover {
-  background: #2b3a8c;
+#end-screen p {
+  font-family: 'Press Start 2P', monospace;
+  font-size: 14px;
+  color: #ffb7c5;
+  line-height: 1.8;
+}
+
+/* Adaptation écran vertical mobile */
+@media (max-aspect-ratio: 1/1) {
+  #man-bubble {
+    width: 85%;
+    top: 5%;
+    left: 7.5%;
+  }
+  #choices-container {
+    width: 85%;
+    right: 7.5%;
+    bottom: 5%;
+  }
+  #dialog-text {
+    font-size: 18px;
+  }
+  .woman-choice-btn {
+    font-size: 8px;
+  }
 }
