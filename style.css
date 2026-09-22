@@ -60,7 +60,7 @@ body, html {
   z-index: 1;
 }
 
-/* Bulle Homme - Haut Gauche (Ajustée Mobile) */
+/* Bulle Homme - Haut Gauche */
 #man-bubble {
   position: absolute;
   top: 4%;
@@ -77,10 +77,11 @@ body, html {
 
 #dialog-text {
   font-family: 'VT323', monospace;
-  font-size: 20px; /* Taille optimisée lisibilité */
+  font-size: 20px;
   color: #0b132b;
   line-height: 1.25;
   word-wrap: break-word;
+  white-space: pre-line;
 }
 
 /* Réponses / Actions Femme - Bas Droite */
@@ -102,7 +103,7 @@ body, html {
   box-shadow: 3px 3px 0px #000;
   padding: 8px 12px;
   font-family: 'Press Start 2P', monospace;
-  font-size: 9px; /* Taille réduite pour mobile */
+  font-size: 9px;
   color: #4a154b;
   text-align: left;
   cursor: pointer;
@@ -125,6 +126,7 @@ body, html {
   align-items: center;
   text-align: center;
   padding: 20px;
+  gap: 25px;
 }
 
 #end-screen p {
@@ -132,6 +134,10 @@ body, html {
   font-size: 14px;
   color: #ffb7c5;
   line-height: 1.8;
+}
+
+#restart-btn {
+  text-align: center;
 }
 
 /* Adaptation écran vertical mobile */
