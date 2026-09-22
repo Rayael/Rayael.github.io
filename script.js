@@ -1,4 +1,6 @@
 const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+// Son de défilement du texte
 function playBlip() {
   if (audioCtx.state === 'suspended') audioCtx.resume();
   const osc = audioCtx.createOscillator();
@@ -13,7 +15,30 @@ function playBlip() {
   osc.stop(audioCtx.currentTime + 0.04);
 }
 
+// Son lors d'un clic sur un bouton / choix
+function playClickSound() {
+  if (audioCtx.state === 'suspended') audioCtx.resume();
+  const osc = audioCtx.createOscillator();
+  const gain = audioCtx.createGain();
+  osc.type = 'triangle';
+  osc.frequency.setValueAtTime(440, audioCtx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.08);
+  gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.08);
+  osc.connect(gain);
+  gain.connect(audioCtx.destination);
+  osc.start();
+  osc.stop(audioCtx.currentTime + 0.08);
+}
+
+// Variables d'état
+let playCount = 0; // Nombre de parties jouées
+let userChoices = []; // Historique des choix faits pour détecter le combo secret
+
+const SECRET_COMBO = [3, 2, 1, 3, 3];
+
 const story = [
+  { id: 0, text: "Ah, te revoilà ! Tu veux une autre dose d'amour ?", next: 1 },
   { id: 1, text: "[...]", next: 2 },
   { id: 2, text: "[...] Tu sais ...", next: 3 },
   { id: 3, text: "Aujourd'hui est un jour spécial.", next: 4 },
@@ -27,9 +52,9 @@ const story = [
     id: 10, 
     text: "Et toi, que pensais-tu de moi ?", 
     choices: [
-      { text: "Franchement, rien de spécial.", next: 11 },
-      { text: "Tu étais mignon, et très attentionné.", next: 12 },
-      { text: "J'ai su, dès le premier regard, que tu étais l'homme de ma vie !", next: 13 }
+      { text: "Franchement, rien de spécial.", choiceNum: 1, next: 11 },
+      { text: "Tu étais mignon, et très attentionné.", choiceNum: 2, next: 12 },
+      { text: "J'ai su, dès le premier regard, que tu étais l'homme de ma vie !", choiceNum: 3, next: 13 }
     ] 
   },
   { id: 11, text: "Hahahaha, je comprends...", next: 14 },
@@ -41,8 +66,8 @@ const story = [
     id: 15, 
     text: "Surtout avec... Kirrigan... Je plaisante.", 
     choices: [
-      { text: "*Taper l'épaule*", next: 16 },
-      { text: "*Sourire*", next: 17 }
+      { text: "*Taper l'épaule*", choiceNum: 1, next: 16 },
+      { text: "*Sourire*", choiceNum: 2, next: 17 }
     ]
   },
   { id: 16, text: "Aïe, je l'ai mérité. Quelle nostalgie.", next: 18 },
@@ -72,8 +97,8 @@ const story = [
     id: 38, 
     text: "Je t'aime, tu sais.", 
     choices: [
-      { text: "Moi aussi je t'aime.", next: 39 },
-      { text: "*Rester silencieuse*", next: 40 }
+      { text: "Moi aussi je t'aime.", choiceNum: 1, next: 39 },
+      { text: "*Rester silencieuse*", choiceNum: 2, next: 40 }
     ]
   },
   { id: 39, text: "*sourit*", next: 41 },
@@ -83,9 +108,9 @@ const story = [
     id: 41, 
     text: "Je me demandais, tu sais quel est mon plat préféré ?", 
     choices: [
-      { text: "Burger et frites ?", next: 42 },
-      { text: "Sushis ?", next: 43 },
-      { text: "... Moi ?", next: 44 }
+      { text: "Burger et frites ?", choiceNum: 1, next: 42 },
+      { text: "Sushis ?", choiceNum: 2, next: 43 },
+      { text: "... Moi ?", choiceNum: 3, next: 44 }
     ]
   },
   { id: 42, text: "Hmmm, non. Mais j'aime bien.", next: 45 },
@@ -105,10 +130,16 @@ const story = [
     id: 54, 
     text: "Alors, pour finir, que souhaiterais-tu ajouter ?", 
     choices: [
-      { text: "J'ai faim.", end: true },
-      { text: "J'ai soif.", end: true },
-      { text: "Fais moi un câlin.", end: true }
+      { text: "J'ai faim.", choiceNum: 1, end: true },
+      { text: "J'ai soif.", choiceNum: 2, end: true },
+      { text: "Fais moi un câlin.", choiceNum: 3, end: true }
     ]
+  },
+  // Nœud secret (Combo 3 -> 2 -> 1 -> 3 -> 3)
+  { 
+    id: 999, 
+    text: "Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime. Je t'aime.\nI love you. I love you. I love you. I love you. I love you. I love you. I love you. I love you. I love you. I love you.\nЯ тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю. Я тебя люблю.\nIch liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich. Ich liebe dich.",
+    end: true 
   }
 ];
 
@@ -116,6 +147,7 @@ let currentStep = 1;
 let isTyping = false;
 
 const startBtn = document.getElementById('start-btn');
+const restartBtn = document.getElementById('restart-btn');
 const mainMenu = document.getElementById('main-menu');
 const bgm = document.getElementById('bgm');
 const manBubble = document.getElementById('man-bubble');
@@ -124,22 +156,45 @@ const choicesContainer = document.getElementById('choices-container');
 const endScreen = document.getElementById('end-screen');
 const endText = document.getElementById('end-text');
 
+// Lancement du jeu depuis le menu principal
 startBtn.addEventListener('click', () => {
+  playClickSound();
   mainMenu.classList.add('fade-out');
   bgm.play().catch(() => {});
   setTimeout(() => {
     mainMenu.style.display = 'none';
-    manBubble.style.display = 'block';
-    renderStep(currentStep);
+    startStory();
   }, 1500);
 });
+
+// Bouton Recommencer
+restartBtn.addEventListener('click', () => {
+  playClickSound();
+  endScreen.style.display = 'none';
+  startStory();
+});
+
+function startStory() {
+  userChoices = [];
+  choicesContainer.style.display = 'flex';
+  manBubble.style.display = 'block';
+
+  // Si c'est au moins la 2ème partie, on commence par le message spécial (id: 0)
+  if (playCount > 0) {
+    currentStep = 0;
+  } else {
+    currentStep = 1;
+  }
+  playCount++;
+  renderStep(currentStep);
+}
 
 function typeWriter(text, i = 0) {
   if (i < text.length) {
     isTyping = true;
     textElem.textContent += text.charAt(i);
-    if (text.charAt(i) !== ' ') playBlip();
-    setTimeout(() => typeWriter(text, i + 1), 35);
+    if (text.charAt(i) !== ' ' && text.charAt(i) !== '\n') playBlip();
+    setTimeout(() => typeWriter(text, i + 1), 30);
   } else {
     isTyping = false;
   }
@@ -149,6 +204,7 @@ function renderStep(id) {
   const node = story.find(item => item.id === id);
   if (!node) return;
 
+  currentStep = id;
   textElem.textContent = "";
   choicesContainer.innerHTML = "";
 
@@ -164,23 +220,50 @@ function renderStep(id) {
           btn.className = 'woman-choice-btn';
           btn.textContent = choice.text;
           btn.onclick = () => {
+            playClickSound();
+            if (choice.choiceNum) {
+              userChoices.push(choice.choiceNum);
+            }
+
+            // Vérification de la fin avec déclenchement du combo secret
             if (choice.end) {
-              showEndScreen();
+              if (isSecretComboActive()) {
+                renderStep(999); // Affichage du pavé d'amour
+              } else {
+                showEndScreen();
+              }
             } else {
               renderStep(choice.next);
             }
           };
           choicesContainer.appendChild(btn);
         });
-      } else if (node.next) {
+      } else if (node.next !== undefined && node.next !== null) {
         const nextBtn = document.createElement('button');
         nextBtn.className = 'woman-choice-btn';
         nextBtn.textContent = node.womanText ? node.womanText : "Suivant ▶";
-        nextBtn.onclick = () => renderStep(node.next);
+        nextBtn.onclick = () => {
+          playClickSound();
+          renderStep(node.next);
+        };
+        choicesContainer.appendChild(nextBtn);
+      } else if (node.end) {
+        const nextBtn = document.createElement('button');
+        nextBtn.className = 'woman-choice-btn';
+        nextBtn.textContent = "Suivant ▶";
+        nextBtn.onclick = () => {
+          playClickSound();
+          showEndScreen();
+        };
         choicesContainer.appendChild(nextBtn);
       }
     }
   }, 50);
+}
+
+function isSecretComboActive() {
+  if (userChoices.length !== SECRET_COMBO.length) return false;
+  return userChoices.every((val, index) => val === SECRET_COMBO[index]);
 }
 
 function showEndScreen() {
