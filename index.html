@@ -3,18 +3,68 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Visual Novel</title>
+  <title>Espace d'Apprentissage & Exercices</title>
   <link rel="stylesheet" href="style.css">
+  <style>
+    /* Styles spécifiques au Menu de Couverture */
+    #portal-menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 80vh;
+      text-align: center;
+    }
+
+    .main-portal-btn {
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      cursor: pointer;
+      border-radius: 8px;
+      text-decoration: none;
+      display: inline-block;
+      margin-top: 20px;
+    }
+
+    /* Secret Button (Bouton caché) */
+    .secret-trigger {
+      position: fixed;
+      bottom: 15px;
+      right: 15px;
+      opacity: 0.2; /* Très discret */
+      font-size: 0.8rem;
+      cursor: pointer;
+      user-select: none;
+      transition: opacity 0.3s;
+    }
+
+    .secret-trigger:hover {
+      opacity: 1; /* S'illumine un peu au survol si on cherche bien */
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Menu Principal -->
-  <div id="main-menu">
+  <!-- 1. Nouveau Menu d'Accueil (Couverture Officielle) -->
+  <div id="portal-menu">
+    <h1>Plateforme d'Exercices de Français</h1>
+    <p>Bienvenue ! Cliquez ci-dessous pour accéder aux cours et exercices.</p>
+    
+    <a href="index_fr.html" class="woman-choice-btn main-portal-btn">
+      Accéder aux Exercices de Français 📖
+    </a>
+
+    <!-- Bouton Secret Caché en bas à droite -->
+    <div id="secret-btn" class="secret-trigger" title="?">❤️</div>
+  </div>
+
+  <!-- 2. Ancien Menu Principal (Masqué au départ) -->
+  <div id="main-menu" style="display: none;">
     <h1>5 Ans Ensemble</h1>
     <button id="start-btn" class="woman-choice-btn" style="text-align:center;">Commencer</button>
   </div>
 
-  <!-- Zone de jeu -->
+  <!-- 3. Zone de jeu (Visual Novel) -->
   <div id="game-stage">
     <div id="bg-gif"></div>
 
@@ -36,6 +86,18 @@
   <!-- Musique -->
   <audio id="bgm" loop src="assets/love.mp3"></audio>
 
+  <!-- Script principal du jeu -->
   <script src="script.js"></script>
+
+  <!-- Script pour le bouton secret -->
+  <script>
+    document.getElementById('secret-btn').addEventListener('click', function() {
+      // Masque la page d'accueil officielle
+      document.getElementById('portal-menu').style.display = 'none';
+      
+      // Affiche le menu initial des 5 ans
+      document.getElementById('main-menu').style.display = 'block';
+    });
+  </script>
 </body>
 </html>
