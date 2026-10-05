@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Visual Novel</title>
+
+  <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+
+
+  <!-- Menu Principal -->
+
+  <div id="main-menu">
+
+    <h1>5 Ans Ensemble</h1>
+
+    <button id="start-btn" class="woman-choice-btn" style="text-align:center;">Commencer</button>
+
+  </div>
+
+
+
+  <!-- Zone de jeu -->
+
+  <div id="game-stage">
+
+    <div id="bg-gif"></div>
+
+
+
+    <!-- Bulle Homme -->
+
+    <div id="man-bubble">
+
+      <div id="dialog-text"></div>
+
+    </div>
+
+
+
+    <!-- Réponses Femme -->
+
+    <div id="choices-container"></div>
+
+
+
+    <!-- Écran de Fin -->
+
+    <div id="end-screen">
+
+      <p id="end-text"></p>
+
+      <button id="restart-btn" class="woman-choice-btn">Recommencer ↺</button>
+
+    </div>
+
+  </div>
+
+
+
+  <!-- Musique -->
+
+  <audio id="bgm" loop src="assets/love.mp3"></audio>
+
+
+
+  <script src="script.js"></script>
+
+</body>
+
+</html> 
+
